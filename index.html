@@ -9,10 +9,8 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <!-- 🧭 Leaflet JS -->
+  <!-- 🧭 Leaflet & Spiel-Logik -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <!-- 🧠 Spiel-Logik -->
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -31,7 +29,10 @@
       <!-- 🎯 Eingabe & Feedback -->
       <div id="controls">
         <input type="text" id="guessInput" placeholder="Straßenname eingeben..." />
-        <button onclick="guess()">Raten</button>
+        <div id="buttons">
+          <button onclick="guess()">Raten</button>
+          <button onclick="showHint()">Tipp</button>
+        </div>
         <p id="feedback"></p>
       </div>
 
