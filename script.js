@@ -23,7 +23,7 @@ fetch('berlin-innenstadt.geojson')
     L.geoJSON(aktuelleStrasse, {
       style: {
         color: "red",
-        weight: 4
+        weight: 8
       }
     }).addTo(map);
 
