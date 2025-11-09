@@ -1,7 +1,7 @@
 var map = L.map('map').setView([52.5200, 13.4050], 12);
 
-L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
-  attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL.'
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
 const erlaubteStadtteile = [
