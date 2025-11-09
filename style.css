@@ -47,7 +47,11 @@ h1 {
   margin-bottom: 10px;
 }
 
-/* 🔘 Button */
+#buttons {
+  display: flex;
+  gap: 10px;
+}
+
 button {
   padding: 8px 16px;
   font-size: 16px;
