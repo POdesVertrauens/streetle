@@ -8,14 +8,12 @@
 </head>
 <body>
   <div id="map"></div>
+  <div id="input-area">
+    <input type="text" id="guess" placeholder="Straßenname raten">
+    <button onclick="checkGuess()">Prüfen</button>
+    <p id="feedback"></p>
+  </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
-<div id="map"></div>
-<div id="input-area">
-  <input type="text" id="guess" placeholder="Straßenname raten">
-  <button onclick="checkGuess()">Prüfen</button>
-  <p id="feedback"></p>
-</div>
-
