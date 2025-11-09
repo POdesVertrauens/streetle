@@ -91,3 +91,10 @@ function levenshtein(a, b) {
 
   return matrix[a.length][b.length];
 }
+
+// ⌨️ ENTER als Absenden
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    guess();
+  }
+});
