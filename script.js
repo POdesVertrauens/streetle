@@ -30,4 +30,5 @@ fetch('berlin-innenstadt.geojson')
     console.log("Gesuchte Straße:", aktuelleStrasse.properties.strassenna);
   });
 
-// Eing
+document.getElementById("rateButton").addEventListener("click", checkGuess);
+
