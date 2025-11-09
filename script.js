@@ -1,17 +1,22 @@
-const map = L.map('map').setView([52.5200, 13.4050], 12);
+// 🗺️ Karte initialisieren
+const map = L.map('map').setView([52.52, 13.405], 12);
 
+// 🌍 Tile-Layer laden
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
+// 🎯 Aktuelle Zielstraße
 let aktuelleStrasse = null;
 
+// 📥 GeoJSON laden & zufällige Straße auswählen
 fetch('berlin-innenstadt.geojson')
   .then(res => res.json())
   .then(data => {
     const alleFeatures = data.features.filter(f => f.properties.strassenna);
     aktuelleStrasse = alleFeatures[Math.floor(Math.random() * alleFeatures.length)];
 
+    // 🔴 Straße rot darstellen
     const layer = L.geoJSON(aktuelleStrasse, {
       style: {
         color: "red",
@@ -19,9 +24,11 @@ fetch('berlin-innenstadt.geojson')
       }
     }).addTo(map);
 
+    // 🔍 Karte auf Straße zoomen
     map.fitBounds(layer.getBounds());
   });
 
+// 🧪 Ratefunktion
 function guess() {
   const input = document.getElementById("guessInput").value.trim().toLowerCase();
   const feedback = document.getElementById("feedback");
