@@ -1,29 +1,41 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+  <!-- 🧠 Meta & Ressourcen -->
   <meta charset="UTF-8">
   <title>Streetle Berlin</title>
+
+  <!-- 🎨 Stylesheets -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- 🧭 Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- 🧠 Spiel-Logik -->
+  <script src="script.js" defer></script>
 </head>
 <body>
+  <!-- 🏷️ Header -->
   <header>
     <h1>Streetle</h1>
   </header>
 
+  <!-- 🎮 Spielbereich -->
   <main>
     <div id="game-container">
+      
+      <!-- 🗺️ Karte -->
       <div id="map"></div>
+
+      <!-- 🎯 Eingabe & Feedback -->
       <div id="controls">
         <input type="text" id="guessInput" placeholder="Straßenname eingeben..." />
         <button onclick="guess()">Raten</button>
         <p id="feedback"></p>
       </div>
+
     </div>
   </main>
-
-<script src="script.js" defer></script>
 </body>
 </html>
-
