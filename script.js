@@ -1,45 +1,51 @@
-var map = L.map('map').setView([52.5200, 13.4050], 12);
+// Karte initialisieren
+const map = L.map('map').setView([52.5200, 13.4050], 12);
 
+// Tile-Layer (OpenStreetMap)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-const erlaubteStadtteile = [
-  "Mitte", "Moabit", "Tiergarten", "Charlottenburg", "Wilmersdorf",
-  "Prenzlauer Berg", "Schöneberg", "Kreuzberg", "Friedrichshain",
-  "Neukölln", "Tempelhof", "Alt-Treptow"
-];
+// Alle Features und Straßennamen speichern
+let alleFeatures = [];
+let aktuelleStrasse = null;
+let geoJsonLayer = null;
 
-let alleStrassennamen = new Set();
-
-fetch('berlin-detailnetz.geojson')
+// GeoJSON laden
+fetch('berlin-innenstadt.geojson')
   .then(res => res.json())
   .then(data => {
-    L.geoJSON(data, {
-      filter: function (feature) {
-        const stadtteil = feature.properties.stadtteil;
-        const name = feature.properties.name;
-        if (erlaubteStadtteile.includes(stadtteil) && name) {
-          alleStrassennamen.add(name.toLowerCase());
-          return true;
-        }
-        return false;
-      },
+    // Nur Features mit gültigem Straßennamen
+    alleFeatures = data.features.filter(f => f.properties.strassenna);
+
+    // Layer erzeugen (grau)
+    geoJsonLayer = L.geoJSON(data, {
       style: {
-        color: "#ff6600",
+        color: "#888",
         weight: 1
       }
     }).addTo(map);
+
+    // Zufällige Straße auswählen
+    aktuelleStrasse = alleFeatures[Math.floor(Math.random() * alleFeatures.length)];
+    console.log("Gesuchte Straße:", aktuelleStrasse.properties.strassenna);
   });
 
+// Eingabe prüfen
 function checkGuess() {
   const input = document.getElementById("guess").value.trim().toLowerCase();
   const feedback = document.getElementById("feedback");
-  if (alleStrassennamen.has(input)) {
+
+  if (!aktuelleStrasse) {
+    feedback.textContent = "⏳ Daten werden noch geladen...";
+    feedback.style.color = "gray";
+    return;
+  }
+
+  const zielname = aktuelleStrasse.properties.strassenna.toLowerCase();
+
+  if (input === zielname) {
     feedback.textContent = "✅ Richtig!";
     feedback.style.color = "green";
-  } else {
-    feedback.textContent = "❌ Leider falsch.";
-    feedback.style.color = "red";
-  }
-}
+
+    // Straße
