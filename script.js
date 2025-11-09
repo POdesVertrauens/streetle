@@ -21,7 +21,7 @@ fetch('berlin-innenstadt.geojson')
     // Layer erzeugen (grau)
     geoJsonLayer = L.geoJSON(data, {
       style: {
-        color: "#888",
+        color: "#e01010",
         weight: 1
       }
     }).addTo(map);
