@@ -29,11 +29,20 @@
       <!-- 🎯 Eingabe & Buttons -->
       <div id="controls">
         <div id="input-row">
+          <!-- 💡 Tipp-Button -->
           <button onclick="showHint()">💡 Tipp erhalten</button>
+
+          <!-- ✍️ Eingabefeld -->
           <input type="text" id="guessInput" placeholder="Straßenname eingeben..." />
+
+          <!-- 🔄 Neue Straße -->
           <button onclick="neueStrasse()">⟳ Neue Straße</button>
         </div>
+
+        <!-- ✅ Raten-Button -->
         <button id="rateButton" onclick="guess()">Raten</button>
+
+        <!-- 💬 Feedback -->
         <p id="feedback"></p>
       </div>
 
