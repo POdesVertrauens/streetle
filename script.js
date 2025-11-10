@@ -187,6 +187,20 @@ if (schwierigkeit === "leicht") {
   );
 }
 
+function normalizeName(name) {
+  return name
+    .toLowerCase()
+    .replace("ß", "ss")
+    .trim();
+}
+
+if (schwierigkeit === "leicht") {
+  alleFeatures = alleFeatures.filter(f => {
+    const streetName = normalizeName(f.properties.strassenna || "");
+    return wichtigeStrassen.some(w => normalizeName(w) === streetName);
+  });
+}
+
 // 🔍 Autocomplete Vorschläge
 function zeigeVorschlaege(eingabe) {
   const box = document.getElementById("vorschlagBox");
