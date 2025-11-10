@@ -12,6 +12,8 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png
 let alleFeatures = [];
 let aktuelleStrasse = null;
 let aktuelleLayer = null;
+let tippStufe = 0;
+let schwierigkeit = "leicht"
 
 // 📥 GeoJSON laden
 fetch('berlin-innenstadt.geojson')
