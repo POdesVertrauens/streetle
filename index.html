@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <!-- 🧠 Meta & Ressourcen -->
   <meta charset="UTF-8">
   <title>Streetle Berlin</title>
-  <script src="script.js" defer></script>
 
   <!-- 🎨 Stylesheets -->
   <link rel="stylesheet" href="style.css">
@@ -30,11 +28,11 @@
       <div id="controls">
         <div id="input-row">
           <!-- 💡 Tipp-Button -->
-          <button onclick="zeigeTipp()">💡 Tipp anzeigen</button>
+          <button id="tippButton" onclick="zeigeTipp()">💡 Tipp anzeigen</button>
 
           <!-- ✍️ Eingabefeld mit Autocomplete und X -->
           <div class="input-wrapper">
-            <input type="text" id="guessInput" placeholder="Straßenname eingeben..." oninput="zeigeTipp(this.value)">
+            <input type="text" id="guessInput" placeholder="Straßenname eingeben..." oninput="zeigeVorschlaege(this.value)">
             <span class="clear-btn" onclick="document.getElementById('guessInput').value=''; document.getElementById('vorschlagBox').innerHTML=''">×</span>
             <div id="vorschlagBox" class="dropdown"></div>
           </div>
@@ -56,5 +54,3 @@
   </main>
 </body>
 </html>
-
-
