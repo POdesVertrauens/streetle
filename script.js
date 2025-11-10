@@ -4,8 +4,8 @@ let aktuelleStrasse = null;
 let tippStufe = 0;
 let schwierigkeit = "leicht"; // oder "schwer"
 
-// 📥 Daten laden
-fetch('berlin_ring_strassen.geojson')
+// 📥 Daten laden (richtiger Dateiname!)
+fetch('berlin-innenstadtt.geojson')
   .then(res => res.json())
   .then(data => {
     alleFeatures = data.features.filter(f => f.properties.strassenna);
