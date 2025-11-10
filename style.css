@@ -5,31 +5,52 @@ body {
   padding: 0;
 }
 
-/* Seitenmenü */
+/* Seitenmenü als Overlay */
 .side-menu {
   position: fixed;
   top: 0;
-  right: -250px; /* ausgeblendet */
-  width: 250px;
+  right: 0;
+  width: 280px;
   height: 100%;
-  background: #f4f4f4;
-  box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+  background: #fff;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.3);
   padding: 20px;
-  transition: right 0.3s ease;
+  transform: translateX(100%); /* ausgeblendet */
+  transition: transform 0.3s ease;
   z-index: 2000;
+  overflow-y: auto; /* falls Inhalt länger wird */
 }
 
 .side-menu.open {
-  right: 0; /* eingeblendet */
+  transform: translateX(0); /* eingeblendet */
 }
 
+/* Menü-Button */
 #menuToggle {
   position: absolute;
-  right: 10px;
-  top: 10px;
-  padding: 5px 10px;
+  right: 15px;
+  top: 15px;
+  padding: 8px 12px;
+  font-size: 18px;
+  background: #333;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* Radiobuttons im Menü */
+.side-menu h2 {
+  margin-top: 0;
+}
+
+.side-menu label {
+  display: block;
+  margin: 10px 0;
+  font-size: 16px;
   cursor: pointer;
 }
+
 
 header {
   background: #333;
@@ -104,4 +125,5 @@ button {
 .dropdown div:hover {
   background: #eee;
 }
+
 
