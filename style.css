@@ -58,3 +58,23 @@ button {
   padding: 5px 10px;
   cursor: pointer;
 }
+
+/* 📑 Dropdown Vorschläge */
+.dropdown {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 100%;
+  z-index: 1000;
+}
+
+.dropdown div {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.dropdown div:hover {
+  background: #eee;
+}
