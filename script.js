@@ -1,3 +1,34 @@
+// Menü öffnen/schließen
+document.getElementById("menuToggle").addEventListener("click", () => {
+  document.getElementById("sideMenu").classList.toggle("open");
+});
+
+// Schwierigkeit ändern
+document.querySelectorAll("input[name='difficulty']").forEach(radio => {
+  radio.addEventListener("change", (e) => {
+    schwierigkeit = e.target.value;
+
+    // Filter anwenden
+    if (schwierigkeit === "leicht") {
+      alleFeatures = alleFeatures.filter(f =>
+        wichtigeStrassen.includes(f.properties.strassenna)
+      );
+    } else {
+      // schwer = alle Straßen wieder laden
+      fetch('berlin-innenstadt.geojson')
+        .then(res => res.json())
+        .then(data => {
+          alleFeatures = data.features.filter(f => f.properties.strassenna);
+          neueStrasse();
+        });
+      return;
+    }
+
+    // Neue Runde starten
+    neueStrasse();
+  });
+});
+
 // 🗺️ Karte initialisieren
 const map = L.map('map').setView([52.52, 13.405], 12);
 
