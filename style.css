@@ -5,6 +5,32 @@ body {
   padding: 0;
 }
 
+/* Seitenmenü */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -250px; /* ausgeblendet */
+  width: 250px;
+  height: 100%;
+  background: #f4f4f4;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+  padding: 20px;
+  transition: right 0.3s ease;
+  z-index: 2000;
+}
+
+.side-menu.open {
+  right: 0; /* eingeblendet */
+}
+
+#menuToggle {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
 header {
   background: #333;
   color: white;
@@ -78,3 +104,4 @@ button {
 .dropdown div:hover {
   background: #eee;
 }
+
