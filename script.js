@@ -29,6 +29,67 @@ document.querySelectorAll("input[name='difficulty']").forEach(radio => {
   });
 });
 
+let aktuelleRunde = 0;       // Zähler für Teilspiele (0–4)
+let punkteGesamt = 0;        // Gesamtpunkte in der Runde
+let fehlversuche = 0;        // Fehlversuche pro Teilspiel
+
+function neuesSpiel() {
+  aktuelleRunde = 0;
+  punkteGesamt = 0;
+  starteTeilspiel();
+}
+
+function guess() {
+  const input = document.getElementById("guessInput").value.trim().toLowerCase();
+  if (!aktuelleStrasse) return;
+
+  const zielname = (aktuelleStrasse.properties.strassenna || "").toLowerCase();
+  const feedback = document.getElementById("feedback");
+
+  if (!input) return;
+
+  if (istAehnlich(input, zielname)) {
+    let punkte = 0;
+    if (tippStufe === 0) punkte = 3;
+    else if (tippStufe === 1) punkte = 2;
+    else if (tippStufe === 2) punkte = 1;
+
+    punkteGesamt += punkte;
+    feedback.textContent = `✅ Richtig! +${punkte} Punkte (Gesamt: ${punkteGesamt})`;
+    feedback.style.color = "green";
+
+    setTimeout(nextTeilspiel, 1500);
+  } else {
+    fehlversuche++;
+    if (fehlversuche >= 3) {
+      feedback.textContent = `❌ 3 Fehlversuche – Lösung: ${aktuelleStrasse.properties.strassenna}`;
+      feedback.style.color = "red";
+      setTimeout(nextTeilspiel, 2000);
+    } else {
+      feedback.textContent = `❌ Versuch ${fehlversuche} – nochmal probieren!`;
+      feedback.style.color = "red";
+    }
+  }
+}
+
+function nextTeilspiel() {
+  aktuelleRunde++;
+  if (aktuelleRunde < 5) {
+    starteTeilspiel();
+  } else {
+    document.getElementById("feedback").textContent =
+      `🏆 Runde beendet! Gesamtpunkte: ${punkteGesamt} von 15`;
+    document.getElementById("feedback").style.color = "blue";
+  }
+}
+
+function starteTeilspiel() {
+  fehlversuche = 0;
+  neueStrasse(); // deine bestehende Funktion
+  document.getElementById("feedback").textContent = 
+    `Teilspiel ${aktuelleRunde+1} von 5 – Punkte bisher: ${punkteGesamt}`;
+}
+
 // 🗺️ Karte initialisieren
 const map = L.map('map').setView([52.52, 13.405], 12);
 
