@@ -60,6 +60,29 @@ function guess() {
   }
 }
 
+// 🔍 Autocomplete Vorschläge
+function zeigeVorschlaege(eingabe) {
+  const box = document.getElementById("vorschlagBox");
+  box.innerHTML = "";
+
+  if (eingabe.length < 2) return; // erst ab 2 Buchstaben
+
+  const matches = alleFeatures
+    .map(f => f.properties.strassenna)
+    .filter(name => name && name.toLowerCase().startsWith(eingabe.toLowerCase()))
+    .slice(0, 10); // max. 10 Vorschläge
+
+  matches.forEach(name => {
+    const div = document.createElement("div");
+    div.innerText = name;
+    div.onclick = () => {
+      document.getElementById("guessInput").value = name;
+      box.innerHTML = "";
+    };
+    box.appendChild(div);
+  });
+}
+
 // 💡 Tipp-Logik (2-stufig: 1 Buchstabe, dann 3 Buchstaben)
 function zeigeTipp() {
   if (!aktuelleStrasse) return;
