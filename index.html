@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <!-- 🧭 Leaflet & Spiel-Logik -->
+  <!-- 🧩 Leaflet & Spiel-Logik -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js" defer></script>
 </head>
@@ -22,7 +22,6 @@
   <!-- 🎮 Spielbereich -->
   <main>
     <div id="game-container">
-      
       <!-- 🗺️ Karte -->
       <div id="map"></div>
 
@@ -30,10 +29,13 @@
       <div id="controls">
         <div id="input-row">
           <!-- 💡 Tipp-Button -->
-          <button onclick="showHint()">💡 Tipp erhalten</button>
+          <button onclick="zeigeTipp()">💡 Tipp anzeigen</button>
 
-          <!-- ✍️ Eingabefeld -->
-          <input type="text" id="guessInput" placeholder="Straßenname eingeben..." />
+          <!-- ✍️ Eingabefeld mit X -->
+          <div class="input-wrapper">
+            <input type="text" id="guessInput" placeholder="Straßenname eingeben...">
+            <span class="clear-btn" onclick="document.getElementById('guessInput').value=''">×</span>
+          </div>
 
           <!-- 🔄 Neue Straße -->
           <button onclick="neueStrasse()">⟳ Neue Straße</button>
@@ -44,8 +46,10 @@
 
         <!-- 💬 Feedback -->
         <p id="feedback"></p>
-      </div>
 
+        <!-- 📌 Tipp-Ausgabe -->
+        <div id="tippBox"></div>
+      </div>
     </div>
   </main>
 </body>
