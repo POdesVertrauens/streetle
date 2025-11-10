@@ -60,13 +60,28 @@ function guess() {
   }
 }
 
-// 💡 Tipp anzeigen
+// 💡 Tipp-Logik (2-stufig: 1 Buchstabe, dann 3 Buchstaben)
 function zeigeTipp() {
   if (!aktuelleStrasse) return;
-  const buchstabe = aktuelleStrasse.properties.strassenna.trim().charAt(0).toUpperCase();
-  const feedback = document.getElementById("feedback");
-  feedback.textContent = `💡 Die gesuchte Straße beginnt mit einem "${buchstabe}".`;
-  feedback.style.color = "#333";
+  const btn = document.getElementById("tippButton");
+  const name = aktuelleStrasse.properties.strassenna || "";
+
+  if (tippStufe === 0) {
+    // 1. Tipp: erster Buchstabe
+    document.getElementById("tippBox").innerText =
+      "Die Straße beginnt mit " + name.substring(0, 1);
+    if (btn) btn.innerText = "Weiteren Tipp erhalten";
+    tippStufe = 1;
+  } else if (tippStufe === 1) {
+    // 2. Tipp: erste drei Buchstaben
+    document.getElementById("tippBox").innerText =
+      "Die Straße beginnt mit " + name.substring(0, 3);
+    if (btn) btn.innerText = "Keine weiteren Tipps verfügbar";
+    tippStufe = 2;
+  } else {
+    // keine weiteren Tipps, Text bleibt wie er ist
+    if (btn) btn.innerText = "Keine weiteren Tipps verfügbar";
+  }
 }
 
 // 🔍 Toleranter Vergleich (Levenshtein-Distanz)
