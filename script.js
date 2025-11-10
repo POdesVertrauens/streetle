@@ -11,6 +11,12 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
+// GeoJSON auf die Karte legen
+fetch('berlin-innenstadtt.geojson')
+  .then(res => res.json())
+  .then(data => {
+    L.geoJSON(data).addTo(map); 
+  });
 
 // 📥 Daten laden (richtiger Dateiname!)
 fetch('berlin-innenstadt.geojson')
