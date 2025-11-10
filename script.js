@@ -4,7 +4,7 @@ let aktuelleStrasse = null;
 let tippStufe = 0;
 let schwierigkeit = "leicht"; // oder "schwer"
 
-// Daten laden
+// 📥 Daten laden
 fetch('berlin_ring_strassen.geojson')
   .then(res => res.json())
   .then(data => {
@@ -22,7 +22,7 @@ fetch('berlin_ring_strassen.geojson')
     neueStrasse();
   });
 
-// Neue Straße wählen
+// 🎯 Neue Straße wählen
 function neueStrasse() {
   tippStufe = 0;
   aktuelleStrasse = aktuelleFeatures[Math.floor(Math.random() * aktuelleFeatures.length)];
@@ -30,7 +30,7 @@ function neueStrasse() {
   document.getElementById("tippBox").innerText = "";
 }
 
-// Rate-Logik
+// ✅ Rate-Logik
 function guess() {
   const input = document.getElementById("guessInput").value.trim();
   if (!aktuelleStrasse) return;
@@ -42,7 +42,7 @@ function guess() {
   }
 }
 
-// Tipp-Logik
+// 💡 Tipp-Logik
 function zeigeTipp() {
   tippStufe++;
 
