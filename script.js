@@ -61,7 +61,7 @@ function guess() {
 }
 
 // 💡 Tipp anzeigen
-function showHint() {
+function zeigeTipp() {
   if (!aktuelleStrasse) return;
   const buchstabe = aktuelleStrasse.properties.strassenna.trim().charAt(0).toUpperCase();
   const feedback = document.getElementById("feedback");
