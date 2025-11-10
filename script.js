@@ -4,6 +4,14 @@ let aktuelleStrasse = null;
 let tippStufe = 0;
 let schwierigkeit = "leicht"; // oder "schwer"
 
+// 🌍 Leaflet-Karte initialisieren
+const map = L.map('map').setView([52.52, 13.405], 12); // Mitte Berlin
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+
 // 📥 Daten laden (richtiger Dateiname!)
 fetch('berlin-innenstadt.geojson')
   .then(res => res.json())
@@ -44,20 +52,27 @@ function guess() {
 
 // 💡 Tipp-Logik
 function zeigeTipp() {
-  tippStufe++;
+  const btn = document.querySelector("button[onclick='zeigeTipp()']");
+  let name = aktuelleStrasse.properties.strassenna;
 
-  let tippText = "";
-  if (tippStufe === 1) {
-    tippText = "Straßenlänge: " + Math.round(aktuelleStrasse.properties.length) + " m";
-  } else if (tippStufe === 2) {
-    let name = aktuelleStrasse.properties.strassenna;
-    tippText = "Die ersten drei Buchstaben: " + name.substring(0, 3);
+  if (tippStufe === 0) {
+    // 1. Tipp: erster Buchstabe
+    let ersterBuchstabe = name.substring(0, 1);
+    document.getElementById("tippBox").innerText = "Die Straße beginnt mit " + ersterBuchstabe;
+    btn.innerText = "Weiteren Tipp erhalten";
+    tippStufe = 1;
+  } else if (tippStufe === 1) {
+    // 2. Tipp: erste drei Buchstaben
+    let dreiBuchstaben = name.substring(0, 3);
+    document.getElementById("tippBox").innerText = "Die Straße beginnt mit " + dreiBuchstaben;
+    btn.innerText = "Keine weiteren Tipps verfügbar";
+    tippStufe = 2;
   } else {
-    tippText = "Keine weiteren Tipps!";
+    // keine weiteren Tipps
+    document.getElementById("tippBox").innerText = "Keine weiteren Tipps!";
   }
-
-  document.getElementById("tippBox").innerText = tippText;
 }
+
 
 // 🔍 Autocomplete Vorschläge
 function zeigeVorschlaege(eingabe) {
