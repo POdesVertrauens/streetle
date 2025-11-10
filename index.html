@@ -34,7 +34,7 @@
 
           <!-- ✍️ Eingabefeld mit Autocomplete und X -->
           <div class="input-wrapper">
-            <input type="text" id="guessInput" placeholder="Straßenname eingeben..." oninput="zeigeVorschlaege(this.value)">
+            <input type="text" id="guessInput" placeholder="Straßenname eingeben..." oninput="zeigeTipp(this.value)">
             <span class="clear-btn" onclick="document.getElementById('guessInput').value=''; document.getElementById('vorschlagBox').innerHTML=''">×</span>
             <div id="vorschlagBox" class="dropdown"></div>
           </div>
@@ -56,4 +56,5 @@
   </main>
 </body>
 </html>
+
 
