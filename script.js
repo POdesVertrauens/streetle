@@ -19,7 +19,7 @@ let schwierigkeit = "leicht";
 fetch('berlin-innenstadt.geojson')
   .then(res => res.json())
   .then(data => {
-    alleFeatures = data.features.filter(f => f.properties.strassenna);
+    alleFeatures = data.features.filter(f => f.properties && f.properties.strassenna);
     neueStrasse();
   });
 
@@ -32,22 +32,40 @@ function neueStrasse() {
   aktuelleStrasse = alleFeatures[Math.floor(Math.random() * alleFeatures.length)];
 
   aktuelleLayer = L.geoJSON(aktuelleStrasse, {
-    style: {
-      color: "red",
-      weight: 8
-    }
+    style: { color: "red", weight: 8 }
   }).addTo(map);
 
   map.fitBounds(aktuelleLayer.getBounds());
 
+  // UI reset
   document.getElementById("feedback").textContent = "";
   document.getElementById("guessInput").value = "";
 
-  // Tipp zurücksetzen
+  // 💡 Tipp zurücksetzen
   tippStufe = 0;
   const btn = document.getElementById("tippButton");
   if (btn) btn.innerText = "💡 Tipp anzeigen";
   document.getElementById("tippBox").innerText = "";
+}
+
+// 🧪 Ratefunktion mit Toleranz
+function guess() {
+  const input = document.getElementById("guessInput").value.trim().toLowerCase();
+  if (!aktuelleStrasse) return;
+
+  const zielname = (aktuelleStrasse.properties.strassenna || "").toLowerCase();
+  const feedback = document.getElementById("feedback");
+
+  if (!input) return;
+
+  if (istAehnlich(input, zielname)) {
+    feedback.textContent = "✅ Richtig!";
+    feedback.style.color = "green";
+    setTimeout(neueStrasse, 1500);
+  } else {
+    feedback.textContent = "❌ Leider falsch.";
+    feedback.style.color = "red";
+  }
 }
 
 // 🔍 Autocomplete Vorschläge
@@ -96,34 +114,32 @@ function zeigeTipp() {
     if (btn) btn.innerText = "Keine weiteren Tipps verfügbar";
   }
 }
-// 🧪 Ratefunktion mit Toleranz
-function guess() {
-  const input = document.getElementById("guessInput").value.trim().toLowerCase();
-  const zielname = aktuelleStrasse.properties.strassenna.toLowerCase();
-  const feedback = document.getElementById("feedback");
 
-  if (!input) return;
-
-  if (istAehnlich(input, zielname)) {
-    feedback.textContent = "✅ Richtig!";
-    feedback.style.color = "green";
-    setTimeout(neueStrasse, 1500);
-  } else {
-    feedback.textContent = "❌ Leider falsch.";
-    feedback.style.color = "red";
-  }
-}
 // 🔍 Toleranter Vergleich (Levenshtein-Distanz)
 function istAehnlich(a, b) {
   const dist = levenshtein(a, b);
   return dist <= 2 || b.includes(a) || a.includes(b);
 }
 
-// 🔢 Levenshtein-Distanz
+// 🔢 Levenshtein-Distanz (vollständig geschlossen)
 function levenshtein(a, b) {
-  const matrix = Array.from({ length: a.length + 1 }, () => []);
+  const matrix = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+
   for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-  for (let j = 0; j <= b.length; j++) matrix;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const kosten = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,     // Löschung
+        matrix[i][j - 1] + 1,     // Einfügung
+        matrix[i - 1][j - 1] + kosten // Ersetzung
+      );
+    }
+  }
+
+  return matrix[a.length][b.length];
 }
 
 // ⌨️ ENTER als Absenden
