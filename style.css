@@ -1,4 +1,4 @@
-/* 🌐 Basislayout */
+/* Basislayout */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -28,7 +28,7 @@ header {
   text-align: center;
 }
 
-/* ✍️ Eingabefeld mit X */
+/* Eingabefeld mit X */
 .input-wrapper {
   position: relative;
   display: inline-block;
@@ -52,14 +52,14 @@ header {
   color: #333;
 }
 
-/* 🔘 Buttons */
+/* Buttons */
 button {
   margin: 5px;
   padding: 5px 10px;
   cursor: pointer;
 }
 
-/* 📑 Dropdown Vorschläge */
+/* Dropdown Vorschläge */
 .dropdown {
   position: absolute;
   background: #fff;
