@@ -34,6 +34,27 @@
   </label>
 </div>
 
+  <div id="controls">
+  <button id="newGameButton" onclick="neuesSpiel()">🆕 Neues Spiel starten</button>
+
+  <div id="input-row">
+    <button id="tippButton" onclick="zeigeTipp()">💡 Tipp anzeigen</button>
+
+    <div class="input-wrapper">
+      <input type="text" id="guessInput" placeholder="Straßenname eingeben..." oninput="zeigeVorschlaege(this.value)">
+      <span class="clear-btn"
+            onclick="document.getElementById('guessInput').value=''; document.getElementById('vorschlagBox').innerHTML=''">×</span>
+      <div id="vorschlagBox" class="dropdown"></div>
+    </div>
+
+    <button onclick="neueStrasse()">⟳ Neue Straße</button>
+  </div>
+
+  <button id="rateButton" onclick="guess()">Raten</button>
+  <p id="feedback"></p>
+  <div id="tippBox"></div>
+</div>
+
   <main>
     <div id="game-container">
       <!-- Kartencontainer -->
@@ -67,4 +88,5 @@
   </main>
 </body>
 </html>
+
 
