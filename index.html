@@ -4,50 +4,46 @@
   <meta charset="UTF-8">
   <title>Streetle Berlin</title>
 
-  <!-- 🎨 Stylesheets -->
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-  <!-- 🧩 Leaflet & Spiel-Logik -->
+  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- 🏷️ Header -->
   <header>
     <h1>Streetle</h1>
   </header>
 
-  <!-- 🎮 Spielbereich -->
   <main>
     <div id="game-container">
-      <!-- 🗺️ Karte -->
+      <!-- Kartencontainer -->
       <div id="map"></div>
 
-      <!-- 🎯 Eingabe & Buttons -->
+      <!-- Steuerung -->
       <div id="controls">
         <div id="input-row">
-          <!-- 💡 Tipp-Button -->
           <button id="tippButton" onclick="zeigeTipp()">💡 Tipp anzeigen</button>
 
-          <!-- ✍️ Eingabefeld mit Autocomplete und X -->
           <div class="input-wrapper">
-            <input type="text" id="guessInput" placeholder="Straßenname eingeben..." oninput="zeigeVorschlaege(this.value)">
-            <span class="clear-btn" onclick="document.getElementById('guessInput').value=''; document.getElementById('vorschlagBox').innerHTML=''">×</span>
+            <input
+              type="text"
+              id="guessInput"
+              placeholder="Straßenname eingeben..."
+              oninput="zeigeVorschlaege(this.value)"
+            >
+            <span class="clear-btn"
+                  onclick="document.getElementById('guessInput').value=''; document.getElementById('vorschlagBox').innerHTML=''">×</span>
             <div id="vorschlagBox" class="dropdown"></div>
           </div>
 
-          <!-- 🔄 Neue Straße -->
           <button onclick="neueStrasse()">⟳ Neue Straße</button>
         </div>
 
-        <!-- ✅ Raten-Button -->
         <button id="rateButton" onclick="guess()">Raten</button>
-
-        <!-- 💬 Feedback -->
         <p id="feedback"></p>
-
-        <!-- 📌 Tipp-Ausgabe -->
         <div id="tippBox"></div>
       </div>
     </div>
