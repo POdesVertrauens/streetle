@@ -68,6 +68,94 @@ function guess() {
   }
 }
 
+// Liste der wichtigsten Straßen
+const wichtigeStrassen = [
+  "Friedrichstraße",
+  "Unter den Linden",
+  "Karl-Marx-Allee",
+  "Gneisenaustraße",
+  "Mehringdamm",
+  "Prenzlauer Allee",
+  "Frankfurter Allee",
+  "Kantstraße",
+  "Kurfürstendamm",
+  "Alexanderplatz",
+  "Potsdamer Platz",
+  "Leipziger Straße",
+  "Torstraße",
+  "Oranienstraße",
+  "Schönhauser Allee",
+  "Müllerstraße",
+  "Seestraße",
+  "Tempelhofer Damm",
+  "Hermannstraße",
+  "Karl-Liebknecht-Straße",
+  "Straße des 17. Juni",
+  "Wilhelmstraße",
+  "Invalidenstraße",
+  "Greifswalder Straße",
+  "Oberbaumbrücke",
+  "Alt-Moabit",
+  "Heidestraße",
+  "Chausseestraße",
+  "Landsberger Allee",
+  "Hasenheide",
+  "Adalbertstraße",
+  "Skalitzer Straße",
+  "Warschauer Straße",
+  "Boxhagener Straße",
+  "Karl-Marx-Straße",
+  "Sonnenallee",
+  "Revaler Straße",
+  "Frankfurter Tor",
+  "Straßburger Straße",
+  "Kottbusser Damm",
+  "Urbanstraße",
+  "Grunewaldstraße",
+  "Bismarckstraße",
+  "Spandauer Damm",
+  "Breite Straße",  
+  "Turmstraße",
+  "Birkenstraße",
+  "Schloßstraße",
+  "Stuttgarter Platz",
+  "Fasanenstraße",
+  "Bülowstraße",
+  "Motzstraße",
+  "Potsdamer Straße",
+  "Oranienburger Straße",
+  "Zionskirchplatz",
+  "Ludwigkirchplatz",
+  "Pariser Platz",
+  "Hackescher Markt",
+  "Rosenthaler Platz",
+  "Boxhagener Platz",
+  "Mauerpark",
+  "Savignyplatz",
+  "Nollendorfplatz",
+  "Kollwitzplatz",
+  "Kollwitzstraße",
+  "Helmholtzplatz",
+  "Görlitzer Straße",
+  "Schlesische Straße",
+  "Breitscheidplatz",
+  "Budapester Straße",
+  "Tauentzienstraße",
+  "Hauptstraße",
+  "Wiener Straße",
+  "Reichenberger Straße",
+  "Graefestraße",
+  "Hermannplatz",
+  "Holzmarktstraße"
+];
+
+// Filter anwenden
+if (schwierigkeit === "leicht") {
+  alleFeatures = alleFeatures.filter(f =>
+    wichtigeStrassen.includes(f.properties.strassenna)
+  );
+}
+
 // 🔍 Autocomplete Vorschläge
 function zeigeVorschlaege(eingabe) {
   const box = document.getElementById("vorschlagBox");
