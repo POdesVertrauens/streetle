@@ -92,20 +92,6 @@ function zeigeTipp() {
   const name = aktuelleStrasse.properties.strassenna || "";
 
   if (tippStufe === 0) {
-    document.getElementById("tippBox").innerText =
-      "Die Straße beginnt mit " + name.substring(0, 1);
-    btn.innerText = "Weiteren Tipp erhalten";
-    tippStufe = 1;
-  } else if (tippStufe === 1) {
-    document.getElementById("tippBox").innerText =
-      "Die Straße beginnt mit " + name.substring(0, 3);
-    btn.innerText = "Keine weiteren Tipps verfügbar";
-    tippStufe = 2;
-  }
-}
-
-
-  if (tippStufe === 0) {
     // 1. Tipp: erster Buchstabe
     document.getElementById("tippBox").innerText =
       "Die Straße beginnt mit " + name.substring(0, 1);
