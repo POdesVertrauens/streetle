@@ -123,7 +123,7 @@ function istAehnlich(a, b) {
 function levenshtein(a, b) {
   const matrix = Array.from({ length: a.length + 1 }, () => []);
   for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-  for (let j = 0; j <= b.length; j++) matrix
+  for (let j = 0; j <= b.length; j++) matrix;
 }
 
 // ⌨️ ENTER als Absenden
