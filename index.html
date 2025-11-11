@@ -2,81 +2,64 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Streetle Berlin</title>
-
-  <!-- Styles -->
+  <title>Streetle Berlin – Spiel</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
-  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js" defer></script>
 </head>
 <body>
   <header>
     <h1>Streetle</h1>
+    <!-- Menü-Button -->
+    <button id="menuToggle">☰ Menü</button>
   </header>
-<header>
-  <h1>Streetle</h1>
-  <button id="menuToggle">☰ Menü</button>
-</header>
 
-<!-- Seitenmenü -->
-<div id="sideMenu" class="side-menu">
-  <h2>Schwierigkeit wählen</h2>
-  <label>
-    <input type="radio" name="difficulty" value="leicht" checked>
-    🎯 Leicht (Top 100 Straßen)
-  </label>
-  <label>
-    <input type="radio" name="difficulty" value="schwer">
-    🔥 Schwer (alle Straßen)
-  </label>
-</div>
-
-<div id="controls">
-  <!-- Neues Spiel starten -->
-  <button id="newGameButton" onclick="neuesSpiel()">🆕 Neues Spiel starten</button>
-
-  <!-- Eingabe + Tipp + Neue Straße -->
-  <div id="input-row">
-    <button id="tippButton" onclick="zeigeTipp()">💡 Tipp anzeigen</button>
-
-    <div class="input-wrapper">
-      <input type="text" id="guessInput" placeholder="Straßenname eingeben..." 
-             oninput="zeigeVorschlaege(this.value)">
-      <span class="clear-btn"
-            onclick="document.getElementById('guessInput').value=''; 
-                     document.getElementById('vorschlagBox').innerHTML=''">×</span>
-      <div id="vorschlagBox" class="dropdown"></div>
-    </div>
-
-    <button onclick="neueStrasse()">⟳ Neue Straße</button>
+  <!-- Seitenmenü -->
+  <div id="sideMenu" class="side-menu">
+    <h2>Schwierigkeit wählen</h2>
+    <label>
+      <input type="radio" name="difficulty" value="leicht" checked>
+      🎯 Leicht (Top 100 Straßen)
+    </label>
+    <label>
+      <input type="radio" name="difficulty" value="schwer">
+      🔥 Schwer (alle Straßen)
+    </label>
   </div>
-
-  <!-- Rate-Button + Feedback -->
-  <button id="rateButton" onclick="guess()">Raten</button>
-  <p id="feedback"></p>
-  <div id="tippBox"></div>
-</div>
-
-
-  <button id="rateButton" onclick="guess()">Raten</button>
-  <p id="feedback"></p>
-  <div id="tippBox"></div>
-</div>
 
   <main>
     <div id="game-container">
       <!-- Kartencontainer -->
       <div id="map"></div>
 
+      <!-- Steuerung -->
+      <div id="controls">
+        <!-- Neues Spiel starten -->
+        <button id="newGameButton" onclick="neuesSpiel()">🆕 Neues Spiel starten</button>
+
+        <!-- Eingabe + Tipp + Neue Straße -->
+        <div id="input-row">
+          <button id="tippButton" onclick="zeigeTipp()">💡 Tipp anzeigen</button>
+
+          <div class="input-wrapper">
+            <input type="text" id="guessInput" placeholder="Straßenname eingeben..."
+                   oninput="zeigeVorschlaege(this.value)">
+            <span class="clear-btn"
+                  onclick="document.getElementById('guessInput').value=''; 
+                           document.getElementById('vorschlagBox').innerHTML=''">×</span>
+            <div id="vorschlagBox" class="dropdown"></div>
+          </div>
+
+          <button onclick="neueStrasse()">⟳ Neue Straße</button>
+        </div>
+
+        <!-- Rate-Button + Feedback -->
+        <button id="rateButton" onclick="guess()">Raten</button>
+        <p id="feedback"></p>
+        <div id="tippBox"></div>
       </div>
     </div>
   </main>
 </body>
 </html>
-
-
-
-
