@@ -41,15 +41,20 @@ function isMatch(a, b) {
 
 // 🟦 Initialisierung
 window.addEventListener("load", () => {
+  // Karte mit Carto Positron (hell, ohne Labels)
   map = L.map('map').setView([52.52, 13.405], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap'
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors © CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19
   }).addTo(map);
 
+  // Menü öffnen/schließen
   document.getElementById("menuToggle").addEventListener("click", () => {
     document.getElementById("sideMenu").classList.toggle("open");
   });
 
+  // Schwierigkeit ändern
   document.querySelectorAll("input[name='difficulty']").forEach(radio => {
     radio.addEventListener("change", (e) => {
       schwierigkeit = e.target.value;
@@ -70,4 +75,36 @@ window.addEventListener("load", () => {
     });
 });
 
-//
+// 🟨 Neues Spiel starten
+function neuesSpiel() {
+  aktuelleRunde = 0;
+  punkteGesamt = 0;
+  starteTeilspiel(false);
+}
+
+// 🟩 Teilspiel starten
+function starteTeilspiel(force = false) {
+  fehlversuche = 0;
+  tippStufe = 0;
+  neueStrasse();
+  setFeedback(`Teilspiel ${aktuelleRunde + 1} von 5 – Punkte bisher: ${punkteGesamt}`);
+}
+
+// 🟪 Neue Straße auswählen
+function neueStrasse() {
+  if (!alleFeatures.length) return;
+
+  let pool = alleFeatures;
+  if (schwierigkeit === "leicht") {
+    const wichtigeNorm = new Set(wichtigeStrassen.map(normalizeName));
+    pool = alleFeatures.filter(f => wichtigeNorm.has(normalizeName(f.properties.strassenna)));
+    if (pool.length === 0) {
+      console.warn("Leicht-Filter ergab 0 Ergebnisse – verwende alle Straßen.");
+      pool = alleFeatures;
+    }
+  }
+
+  aktuelleStrasse = pool[Math.floor(Math.random() * pool.length)];
+
+  if (featureLayer) map.removeLayer(featureLayer);
+  featureLayer = L.geoJSON(aktuelleStrasse, { style
