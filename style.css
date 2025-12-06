@@ -1,3 +1,4 @@
+/* 🟦 Grundlayout */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -29,6 +30,7 @@ header h1 {
   border-radius: 4px;
 }
 
+/* 🟨 Seitenmenü */
 .side-menu {
   position: fixed;
   top: 0;
@@ -43,16 +45,17 @@ header h1 {
   z-index: 2000;
   overflow-y: auto;
 }
-
 .side-menu.open {
   transform: translateX(0);
 }
 
+/* 🟩 Karte */
 #map {
   height: 400px;
   width: 100%;
 }
 
+/* 🟪 Controls */
 #controls {
   padding: 15px;
 }
@@ -67,14 +70,12 @@ header h1 {
   border-radius: 4px;
   cursor: pointer;
 }
-
-#newGameButton:hover {
-  background: #005a9e;
-}
+#newGameButton:hover { background: #005a9e; }
 
 #input-row {
   display: flex;
   align-items: center;
+  gap: 10px;
   margin-bottom: 10px;
 }
 
@@ -82,16 +83,31 @@ header h1 {
   position: relative;
   flex: 1;
 }
-
 #guessInput {
   width: 100%;
-  padding: 8px;
+  padding: 8px 32px 8px 8px;
 }
-
 .clear-btn {
   position: absolute;
   right: 8px;
   top: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+#nextStreetButton {
+  padding: 8px 12px;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#tippButton {
+  padding: 8px 12px;
+  background: #ffc107;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 
@@ -103,12 +119,30 @@ header h1 {
   border-radius: 4px;
   cursor: pointer;
 }
-
-#rateButton:hover {
-  background: #1e7e34;
-}
+#rateButton:hover { background: #1e7e34; }
 
 #feedback {
   margin-top: 10px;
   font-weight: bold;
+}
+
+/* Vorschlag-Dropdown */
+.dropdown {
+  position: absolute;
+  top: 36px;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+.dropdown div {
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.dropdown div:hover {
+  background: #f5f5f5;
 }
