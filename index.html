@@ -9,13 +9,13 @@
   <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- Header mit Titel und Menü-Button -->
+  <!-- Header -->
   <header>
     <h1>Streetle</h1>
     <button id="menuToggle">☰ Menü</button>
   </header>
 
-  <!-- Seitenmenü für Schwierigkeit -->
+  <!-- Seitenmenü -->
   <div id="sideMenu" class="side-menu">
     <h2>Schwierigkeit wählen</h2>
     <label>
@@ -31,15 +31,11 @@
   <!-- Hauptbereich -->
   <main>
     <div id="game-container">
-      <!-- Karte -->
       <div id="map"></div>
 
-      <!-- Steuerung -->
       <div id="controls">
-        <!-- Neues Spiel starten -->
         <button id="newGameButton" onclick="neuesSpiel()">🆕 Neues Spiel starten</button>
 
-        <!-- Eingabe + Tipp + Neue Straße -->
         <div id="input-row">
           <button id="tippButton" onclick="zeigeTipp()">💡 Tipp anzeigen</button>
 
@@ -55,7 +51,6 @@
           <button onclick="neueStrasse()">⟳ Neue Straße</button>
         </div>
 
-        <!-- Rate-Button + Feedback -->
         <button id="rateButton" onclick="guess()">Raten</button>
         <p id="feedback"></p>
         <div id="tippBox"></div>
