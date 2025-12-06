@@ -9,13 +9,13 @@
   <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- Header -->
+  <!-- 🟦 Header -->
   <header>
     <h1>Streetle</h1>
     <button id="menuToggle">☰ Menü</button>
   </header>
 
-  <!-- Seitenmenü -->
+  <!-- 🟨 Seitenmenü -->
   <div id="sideMenu" class="side-menu">
     <h2>Schwierigkeit wählen</h2>
     <label>
@@ -28,11 +28,13 @@
     </label>
   </div>
 
-  <!-- Hauptbereich -->
+  <!-- 🟩 Hauptbereich -->
   <main>
     <div id="game-container">
+      <!-- Karte -->
       <div id="map"></div>
 
+      <!-- Steuerung -->
       <div id="controls">
         <button id="newGameButton" onclick="neuesSpiel()">🆕 Neues Spiel starten</button>
 
@@ -48,7 +50,7 @@
             <div id="vorschlagBox" class="dropdown"></div>
           </div>
 
-          <button onclick="neueStrasse()">⟳ Neue Straße</button>
+          <button id="nextStreetButton" onclick="neueStrasse()">⟳ Neue Straße</button>
         </div>
 
         <button id="rateButton" onclick="guess()">Raten</button>
