@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import GeoJsonMap from "./GeoJsonMap";
 import StreetGuessForm from "./street-guess-form/StreetGuessForm";
+import StreetleControls from "./StreetleControls";
 
 const GEOJSON_PATH = "data/berlin-innenstadt.geojson";
 
@@ -61,6 +62,10 @@ export default function StreetleGame() {
       <StreetGuessForm
         onGuess={handleGuess}
         correctStreetName={selectedStreet.properties.streetName}
+      />
+      <StreetleControls
+        streetName={selectedStreet.properties.streetName}
+        onNewStreet={setRandomStreet}
       />
     </div>
   );
