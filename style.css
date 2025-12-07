@@ -125,6 +125,10 @@ button:hover {
 }
 
 /* 🟩 Dropdown Vorschläge */
+.input-wrapper {
+  position: relative;   /* neu */
+  flex: 1;
+}
 .dropdown {
   position: absolute;
   top: 42px;
@@ -145,3 +149,4 @@ button:hover {
   background: #000;
   color: #fff;
 }
+
