@@ -32,7 +32,9 @@ export default function StreetGuessForm({
           placeholder="Straßennamen eingeben..."
           {...form.getInputProps("street")}
         />
-        <Button type="submit">Straße raten</Button>
+        <Button size="md" type="submit">
+          Straße raten
+        </Button>
       </Group>
     </form>
   );

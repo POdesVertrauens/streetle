@@ -1,9 +1,10 @@
 .group {
-  margin-top: 20px;
+  margin: 20px 0;
   width: 100%;
   justify-content: center;
 }
 
 .textInput {
+  margin-top: 0;
   width: 50%;
 }
