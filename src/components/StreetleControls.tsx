@@ -1,13 +1,20 @@
 import { useState } from "react";
-import { Button, Group, Stack, Text } from "@mantine/core";
+import { Button, Group, Stack, Text, Switch } from "@mantine/core";
 import styles from "./StreetleControls.module.css";
 
 type Props = {
   streetName: string;
   onNewStreet: () => void;
+  difficulty: "einfach" | "schwer";
+  setDifficulty: (d: "einfach" | "schwer") => void;
 };
 
-export default function StreetleControls({ streetName, onNewStreet }: Props) {
+export default function StreetleControls({
+  streetName,
+  onNewStreet,
+  difficulty,
+  setDifficulty,
+}: Props) {
   const [hint, setHint] = useState<string | null>(null);
   const [solved, setSolved] = useState<boolean>(false);
 
@@ -25,9 +32,22 @@ export default function StreetleControls({ streetName, onNewStreet }: Props) {
     onNewStreet();
   };
 
+  const handleSwitch = (checked: boolean) => {
+    setDifficulty(checked ? "schwer" : "einfach");
+    setHint(null);
+    setSolved(false);
+    onNewStreet();
+  };
+
   return (
     <Stack mt={16} mb={16} className={styles.centered}>
       <Group>
+        <Switch
+          checked={difficulty === "schwer"}
+          onChange={(event) => handleSwitch(event.currentTarget.checked)}
+          label={difficulty === "schwer" ? "Schwer" : "Einfach"}
+          color="red"
+        />
         <Button onClick={handleHint} variant="outline">
           Hinweis
         </Button>

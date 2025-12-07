@@ -3,6 +3,7 @@ import type { Feature, FeatureCollection, Geometry } from "geojson";
 import GeoJsonMap from "./GeoJsonMap";
 import StreetGuessForm from "./street-guess-form/StreetGuessForm";
 import StreetleControls from "./StreetleControls";
+import importantStreets from "../../data/mostImportantStreets";
 
 const GEOJSON_PATH = "data/berlin-innenstadt.geojson";
 
@@ -20,6 +21,7 @@ export default function StreetleGame() {
     null
   );
   const [error, setError] = useState<string | null>(null);
+  const [difficulty, setDifficulty] = useState<"einfach" | "schwer">("einfach");
 
   useEffect(() => {
     fetch(GEOJSON_PATH)
@@ -38,11 +40,19 @@ export default function StreetleGame() {
   }, [allStreets]);
 
   const setRandomStreet = () => {
-    const randomIndex = Math.floor(
-      Math.random() * (allStreets?.features.length || 0)
-    );
-    const randomStreet = allStreets?.features[randomIndex];
-    if (randomStreet) setSelectedStreet(randomStreet);
+    if (!allStreets) return;
+    let candidates: BerlinStreet[] = [];
+    if (difficulty === "einfach") {
+      const importantSet = new Set(importantStreets);
+      candidates = allStreets.features.filter((f) =>
+        importantSet.has(f.properties.streetName)
+      );
+    } else {
+      candidates = allStreets.features;
+    }
+    if (candidates.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * candidates.length);
+    setSelectedStreet(candidates[randomIndex]);
   };
 
   const handleGuess = (guess: string) => {
@@ -66,6 +76,8 @@ export default function StreetleGame() {
       <StreetleControls
         streetName={selectedStreet.properties.streetName}
         onNewStreet={setRandomStreet}
+        difficulty={difficulty}
+        setDifficulty={setDifficulty}
       />
     </div>
   );
