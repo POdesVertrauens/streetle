@@ -1,29 +1,36 @@
-import { useState } from "react";
-import { TextInput, Button, Group } from "@mantine/core";
+import { Button, Group, TextInput } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import classes from "./StreetGuessForm.module.css";
 interface StreetGuessFormProps {
   onGuess: (streetName: string) => void;
+  correctStreetName: string;
 }
 
-export default function StreetGuessForm({ onGuess }: StreetGuessFormProps) {
-  const [streetName, setStreetName] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onGuess(streetName.trim());
-    setStreetName("");
-  };
+export default function StreetGuessForm({
+  onGuess,
+  correctStreetName,
+}: StreetGuessFormProps) {
+  const form = useForm({
+    mode: "uncontrolled",
+    initialValues: { street: "" },
+    validate: {
+      street: (value) => {
+        const trimmed = value.trim();
+        return trimmed.toLowerCase() !== correctStreetName.toLowerCase()
+          ? "Die Straße ist leider falsch."
+          : null;
+      },
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={form.onSubmit(console.log)}>
       <Group className={classes.group}>
         <TextInput
+          className={classes.textInput}
           size="md"
-          width={150}
-          label="Straßenname"
           placeholder="Straßennamen eingeben..."
-          value={streetName}
-          onChange={(e) => setStreetName(e.currentTarget.value)}
+          {...form.getInputProps("street")}
         />
         <Button type="submit">Straße raten</Button>
       </Group>

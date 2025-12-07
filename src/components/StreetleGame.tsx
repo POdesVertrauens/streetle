@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
-import type { FeatureCollection, GeoJsonObject } from "geojson";
+import type { Feature, FeatureCollection, Geometry } from "geojson";
 import GeoJsonMap from "./GeoJsonMap";
 import StreetGuessForm from "./street-guess-form/StreetGuessForm";
 
 const GEOJSON_PATH = "data/berlin-innenstadt.geojson";
 
+type BerlinStreet = Feature<Geometry, { streetName: string }>;
+type BerlinFeatureCollection = FeatureCollection<
+  Geometry,
+  { streetName: string }
+>;
+
 export default function StreetleGame() {
-  const [allStreets, setAllStreets] = useState<FeatureCollection | null>(null);
-  const [selectedStreet, setSelectedStreet] = useState<GeoJsonObject | null>(
+  const [allStreets, setAllStreets] = useState<BerlinFeatureCollection | null>(
+    null
+  );
+  const [selectedStreet, setSelectedStreet] = useState<BerlinStreet | null>(
     null
   );
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +48,8 @@ export default function StreetleGame() {
     // Implement guess checking logic here if needed
     // For now, just select a new random street
     console.log("guess", guess);
-    setRandomStreet();
+    console.log("street", selectedStreet?.properties.streetName);
+    // setRandomStreet();
   };
 
   if (error) return <div>Error: {error}</div>;
@@ -49,7 +58,10 @@ export default function StreetleGame() {
   return (
     <div>
       <GeoJsonMap street={selectedStreet} />
-      <StreetGuessForm onGuess={handleGuess} />
+      <StreetGuessForm
+        onGuess={handleGuess}
+        correctStreetName={selectedStreet.properties.streetName}
+      />
     </div>
   );
 }
