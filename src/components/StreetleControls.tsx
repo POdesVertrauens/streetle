@@ -5,8 +5,9 @@ import styles from "./StreetleControls.module.css";
 type Props = {
   streetName: string;
   onNewStreet: () => void;
-  difficulty: "einfach" | "schwer";
-  setDifficulty: (d: "einfach" | "schwer") => void;
+  difficulty: "easy" | "hard";
+  setDifficulty: (d: "easy" | "hard") => void;
+  guessCorrect: boolean;
 };
 
 export default function StreetleControls({
@@ -14,6 +15,7 @@ export default function StreetleControls({
   onNewStreet,
   difficulty,
   setDifficulty,
+  guessCorrect,
 }: Props) {
   const [hint, setHint] = useState<string | null>(null);
   const [solved, setSolved] = useState<boolean>(false);
@@ -33,7 +35,7 @@ export default function StreetleControls({
   };
 
   const handleSwitch = (checked: boolean) => {
-    setDifficulty(checked ? "schwer" : "einfach");
+    setDifficulty(checked ? "hard" : "easy");
     setHint(null);
     setSolved(false);
     onNewStreet();
@@ -43,9 +45,9 @@ export default function StreetleControls({
     <Stack mt={16} mb={16} className={styles.centered}>
       <Group>
         <Switch
-          checked={difficulty === "schwer"}
+          checked={difficulty === "hard"}
           onChange={(event) => handleSwitch(event.currentTarget.checked)}
-          label={difficulty === "schwer" ? "Schwer" : "Einfach"}
+          label={difficulty === "hard" ? "Schwer" : "Einfach"}
           color="red"
         />
         <Button onClick={handleHint} variant="outline">
@@ -58,6 +60,11 @@ export default function StreetleControls({
           Neue Straße
         </Button>
       </Group>
+      {guessCorrect && (
+        <div style={{ color: "green", fontWeight: "bold", margin: "12px 0" }}>
+          Glückwunsch, richtige Antwort!
+        </div>
+      )}
       {hint && <Text>Hinweis: {hint}...</Text>}
       {solved && (
         <Text>

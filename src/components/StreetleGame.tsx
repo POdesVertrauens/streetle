@@ -21,7 +21,9 @@ export default function StreetleGame() {
     null
   );
   const [error, setError] = useState<string | null>(null);
-  const [difficulty, setDifficulty] = useState<"einfach" | "schwer">("einfach");
+  const [difficulty, setDifficulty] = useState<"easy" | "hard">("easy");
+  const [guessCorrect, setGuessCorrect] = useState(false);
+  const [candidates, setCandidates] = useState<BerlinStreet[]>([]);
 
   useEffect(() => {
     fetch(GEOJSON_PATH)
@@ -34,31 +36,49 @@ export default function StreetleGame() {
   }, []);
 
   useEffect(() => {
-    if (allStreets?.features.length) {
-      setRandomStreet();
+    if (candidates?.length === 0) {
+      return;
     }
-  }, [allStreets]);
 
-  const setRandomStreet = () => {
+    setRandomStreet();
+  }, [candidates]);
+
+  useEffect(() => {
+    updateCandidates();
+  }, [difficulty, allStreets?.features.length]);
+
+  const updateCandidates = () => {
     if (!allStreets) return;
-    let candidates: BerlinStreet[] = [];
-    if (difficulty === "einfach") {
+    let newCandidates: BerlinStreet[] = [];
+    if (difficulty === "easy") {
       const importantSet = new Set(importantStreets);
-      candidates = allStreets.features.filter((f) =>
+      newCandidates = allStreets.features.filter((f) =>
         importantSet.has(f.properties.streetName)
       );
     } else {
-      candidates = allStreets.features;
+      newCandidates = allStreets.features;
     }
-    if (candidates.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * candidates.length);
-    setSelectedStreet(candidates[randomIndex]);
+    if (newCandidates.length === 0) return;
+    setCandidates(newCandidates);
   };
 
-  const handleGuess = (guess: string) => {
-    // Implement guess checking logic here if needed
-    // For now, just select a new random street
-    console.log("guess", guess);
+  const setRandomStreet = () => {
+    const randomIndex = Math.floor(Math.random() * candidates.length);
+    setSelectedStreet(candidates[randomIndex]);
+    setGuessCorrect(false);
+  };
+
+  const handleGuess = (values: { street: string }) => {
+    const { street } = values;
+    if (
+      street.trim().toLowerCase() ===
+      selectedStreet?.properties.streetName.trim().toLowerCase()
+    ) {
+      setGuessCorrect(true);
+    } else {
+      setGuessCorrect(false);
+    }
+    console.log("guess", street);
     console.log("street", selectedStreet?.properties.streetName);
     // setRandomStreet();
   };
@@ -72,12 +92,15 @@ export default function StreetleGame() {
       <StreetGuessForm
         onGuess={handleGuess}
         correctStreetName={selectedStreet.properties.streetName}
+        options={candidates.map((candidate) => candidate.properties.streetName)}
       />
+
       <StreetleControls
         streetName={selectedStreet.properties.streetName}
         onNewStreet={setRandomStreet}
         difficulty={difficulty}
         setDifficulty={setDifficulty}
+        guessCorrect={guessCorrect}
       />
     </div>
   );

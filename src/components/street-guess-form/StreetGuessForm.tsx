@@ -1,14 +1,16 @@
-import { Button, Group, TextInput } from "@mantine/core";
+import { Autocomplete, Button, Group } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import classes from "./StreetGuessForm.module.css";
 interface StreetGuessFormProps {
-  onGuess: (streetName: string) => void;
+  onGuess: (values: { street: string }) => void;
   correctStreetName: string;
+  options: string[];
 }
 
 export default function StreetGuessForm({
   onGuess,
   correctStreetName,
+  options,
 }: StreetGuessFormProps) {
   const form = useForm({
     mode: "uncontrolled",
@@ -24,12 +26,17 @@ export default function StreetGuessForm({
   });
 
   return (
-    <form onSubmit={form.onSubmit(console.log)}>
+    <form onSubmit={form.onSubmit(onGuess)}>
       <Group className={classes.group}>
-        <TextInput
+        <Autocomplete
           className={classes.textInput}
           size="md"
           placeholder="Straßennamen eingeben..."
+          data={options}
+          comboboxProps={{
+            position: "bottom",
+            middlewares: { flip: false, shift: false },
+          }}
           {...form.getInputProps("street")}
         />
         <Button size="md" type="submit">
