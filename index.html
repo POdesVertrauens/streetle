@@ -18,65 +18,62 @@
 </head>
 
 <body>
-  <div class="startscreen">
-    … dein Startscreen …
+
+  <!-- STARTSCREEN (jetzt NICHT mehr am <body>!) -->
+  <div class="startscreen" id="startscreen">
+
+    <header class="start-header">
+      <h1>Streetle</h1>
+    </header>
+
+    <main class="start-container">
+
+      <!-- 🎮 Modus -->
+      <section class="mode-section">
+        <div class="mode-card" id="singleplayer">Singleplayer</div>
+        <div class="mode-card" id="multiplayer">Multiplayer</div>
+      </section>
+
+      <!-- 🧭 Kontext -->
+      <section class="toggle-section">
+        <h2>🧭 Schwierigkeitsgrad</h2>
+
+        <div class="toggle-card">
+          <span>Mit Kontext (Straßennamen sichtbar)</span>
+          <input type="radio" name="contextMode" id="contextOn" checked>
+        </div>
+
+        <div class="toggle-card">
+          <span>Ohne Kontext (keine Straßennamen)</span>
+          <input type="radio" name="contextMode" id="contextOff">
+        </div>
+      </section>
+
+      <!-- 🛣️ Straßenumfang -->
+      <section class="toggle-section">
+        <h2>🛣️ Straßenumfang</h2>
+
+        <div class="toggle-card">
+          <span>Nur große Straßen & Plätze</span>
+          <input type="radio" name="streetMode" id="majorStreets">
+        </div>
+
+        <div class="toggle-card">
+          <span>Alle Straßen & Plätze</span>
+          <input type="radio" name="streetMode" id="allStreets" checked>
+        </div>
+      </section>
+
+      <!-- 👥 Multiplayer -->
+      <section class="toggle-section" id="mpSection" style="display:none;">
+        <h2>👥 Multiplayer Party</h2>
+        <button id="createPartyBtn">Party erstellen</button>
+        <p id="partyLinkInfo"></p>
+        <p id="partyStatus"></p>
+      </section>
+
+    </main>
   </div>
-</body>
-
-
-  <!-- HEADER -->
-  <header class="start-header">
-    <h1>Streetle</h1>
-  </header>
-
-  <!-- STARTSCREEN -->
-  <main class="start-container">
-
-    <!-- 🎮 Modus -->
-    <section class="mode-section">
-      <div class="mode-card" id="singleplayer">Singleplayer</div>
-      <div class="mode-card" id="multiplayer">Multiplayer</div>
-    </section>
-
-    <!-- 🧭 Kontext -->
-    <section class="toggle-section">
-      <h2>🧭 Schwierigkeitsgrad</h2>
-
-      <div class="toggle-card">
-        <span>Mit Kontext (Straßennamen sichtbar)</span>
-        <input type="radio" name="contextMode" id="contextOn" checked>
-      </div>
-
-      <div class="toggle-card">
-        <span>Ohne Kontext (keine Straßennamen)</span>
-        <input type="radio" name="contextMode" id="contextOff">
-      </div>
-    </section>
-
-    <!-- 🛣️ Straßenumfang -->
-    <section class="toggle-section">
-      <h2>🛣️ Straßenumfang</h2>
-
-      <div class="toggle-card">
-        <span>Nur große Straßen & Plätze</span>
-        <input type="radio" name="streetMode" id="majorStreets">
-      </div>
-
-      <div class="toggle-card">
-        <span>Alle Straßen & Plätze</span>
-        <input type="radio" name="streetMode" id="allStreets" checked>
-      </div>
-    </section>
-
-    <!-- 👥 Multiplayer -->
-    <section class="toggle-section" id="mpSection" style="display:none;">
-      <h2>👥 Multiplayer Party</h2>
-      <button id="createPartyBtn">Party erstellen</button>
-      <p id="partyLinkInfo"></p>
-      <p id="partyStatus"></p>
-    </section>
-
-  </main>
 
   <!-- SPIEL -->
   <main id="gameScreen" style="display:none;">
@@ -132,4 +129,3 @@
 
 </body>
 </html>
-
