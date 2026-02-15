@@ -2,6 +2,7 @@
    SINGLEPLAYER — verbindet UI + GameEngine + Map
    ============================================ */
 
+import { initMap } from "./map.js";
 import { GameEngine } from "./game-engine.js";
 import { setupSuggestions, setText } from "./ui.js";
 import { loadGeoJSON } from "./map.js";
@@ -78,3 +79,4 @@ window.addEventListener("DOMContentLoaded", async () => {
   /* Runde starten */
   engine.startRound();
 });
+
