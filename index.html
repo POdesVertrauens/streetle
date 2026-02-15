@@ -10,38 +10,44 @@
 
   <header class="header">
     <h1 class="title">Streetle</h1>
-    <p class="subtitle">Wie gut kennst du deine Stadt?</p>
+    <p class="subtitle">Finde die richtige Straße – so schnell wie möglich</p>
   </header>
 
   <main class="container">
 
+    <!-- SPIELMODUS -->
     <section class="block">
       <h2 class="block-title">Spielmodus</h2>
-      <button class="btn-outline" onclick="window.location.href='singleplayer.html'">
-        Singleplayer
-      </button>
-      <button class="btn-outline" onclick="window.location.href='multiplayer.html'">
-        Multiplayer
-      </button>
+
+      <label class="radio-row">
+        <input type="radio" name="mode" value="singleplayer" checked>
+        <span>Singleplayer</span>
+      </label>
+
+      <label class="radio-row">
+        <input type="radio" name="mode" value="multiplayer">
+        <span>Multiplayer</span>
+      </label>
     </section>
 
+    <!-- KONTEXT / SCHWIERIGKEIT -->
     <section class="block">
-      <h2 class="block-title">Schwierigkeit Kartendarstellung</h2>
+      <h2 class="block-title">Schwierigkeit</h2>
 
       <label class="radio-row">
         <input type="radio" name="context" value="withContext" checked>
-        <span>Umgebende Straßen anzeigen</span>
+        <span>Umgebende Straßen anzeigen (leicht)</span>
       </label>
 
       <label class="radio-row">
         <input type="radio" name="context" value="withoutContext">
-        <span>Ohne Kontext</span>
+        <span>Ohne Kontext (schwer)</span>
       </label>
-      
     </section>
 
+    <!-- STRASSENAUSWAHL -->
     <section class="block">
-      <h2 class="block-title">Schwierigkeit Straßenauswahl</h2>
+      <h2 class="block-title">Straßenauswahl</h2>
 
       <label class="radio-row">
         <input type="radio" name="streets" value="all" checked>
@@ -49,32 +55,47 @@
       </label>
 
       <label class="radio-row">
-        <input type="radio" name="streets" value="major">
+        <input type="radio" name="streets" value="important">
         <span>Nur wichtige Straßen</span>
       </label>
     </section>
 
+    <!-- ZEIT -->
     <section class="block">
       <h2 class="block-title">Rundendauer</h2>
-
-      <select id="roundTime" class="select">
-        <option value="15">15 Sekunden</option>
+      <select id="time" class="select">
         <option value="30">30 Sekunden</option>
-        <option value="60">1 Minute</option>
-        <option value="120">2 Minuten</option>
+        <option value="45">45 Sekunden</option>
+        <option value="60" selected>60 Sekunden</option>
+        <option value="90">90 Sekunden</option>
       </select>
+    </section>
+
+    <!-- START BUTTON -->
+    <section class="block" style="text-align:center;">
+      <button id="btnStart" class="btn-outline" style="font-size:18px; padding:12px 20px;">
+        Spiel starten
+      </button>
     </section>
 
   </main>
 
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/ui.js"></script>
+  <script>
+    document.getElementById("btnStart").onclick = () => {
+      const mode = document.querySelector('input[name="mode"]:checked').value;
+      const context = document.querySelector('input[name="context"]:checked').value;
+      const streets = document.querySelector('input[name="streets"]:checked').value;
+      const time = document.getElementById("time").value;
+
+      if (mode === "singleplayer") {
+        window.location.href =
+          `singleplayer.html?context=${context}&streets=${streets}&time=${time}`;
+      } else {
+        window.location.href =
+          `multiplayer.html?context=${context}&streets=${streets}&time=${time}`;
+      }
+    };
+  </script>
 
 </body>
 </html>
-
-
-
-
-
-
