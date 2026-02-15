@@ -1,7 +1,3 @@
-/* ============================================
-   FIREBASE — Setup
-   ============================================ */
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getDatabase,
@@ -11,7 +7,6 @@ import {
   onValue
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-/* Deine Firebase-Konfiguration */
 const firebaseConfig = {
   apiKey: "DEIN_API_KEY",
   authDomain: "DEIN_AUTH_DOMAIN",
