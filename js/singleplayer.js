@@ -2,39 +2,22 @@
    SINGLEPLAYER — verbindet UI + GameEngine + Map
    ============================================ */
 
-import { initMap } from "./map.js";
 import { GameEngine } from "./game-engine.js";
 import { setupSuggestions, setText } from "./ui.js";
-import { loadGeoJSON } from "./map.js";
+import { initMap } from "./map.js";
 
 let engine = null;
 
 window.addEventListener("DOMContentLoaded", async () => {
+  /* Einstellungen aus index.html holen */
   const params = new URLSearchParams(window.location.search);
+
   const contextMode = params.get("context") || "with";
   const streetMode = params.get("streets") || "all";
   const roundTime = Number(params.get("time") || 60);
 
-  /* Karte zuerst initialisieren */
+  /* ⭐ Karte zuerst initialisieren */
   initMap(contextMode);
-
-  /* Engine erstellen */
-  engine = new GameEngine({
-    contextMode,
-    streetMode,
-    roundTime
-  });
-
-  /* GeoJSON laden */
-  await engine.loadData();
-
-  /* Vorschläge vorbereiten */
-  ...
-  
-  /* Runde starten */
-  engine.startRound();
-});
-
 
   /* Engine erstellen */
   engine = new GameEngine({
@@ -95,8 +78,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (hint) feedback.textContent = `Hinweis: beginnt mit "${hint}"`;
   };
 
-  /* Runde starten */
+  /* ⭐ Runde starten — jetzt ist Map garantiert initialisiert */
   engine.startRound();
 });
-
-
