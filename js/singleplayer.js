@@ -10,12 +10,31 @@ import { loadGeoJSON } from "./map.js";
 let engine = null;
 
 window.addEventListener("DOMContentLoaded", async () => {
-  /* Einstellungen aus index.html holen */
   const params = new URLSearchParams(window.location.search);
-
   const contextMode = params.get("context") || "with";
   const streetMode = params.get("streets") || "all";
   const roundTime = Number(params.get("time") || 60);
+
+  /* Karte zuerst initialisieren */
+  initMap(contextMode);
+
+  /* Engine erstellen */
+  engine = new GameEngine({
+    contextMode,
+    streetMode,
+    roundTime
+  });
+
+  /* GeoJSON laden */
+  await engine.loadData();
+
+  /* Vorschläge vorbereiten */
+  ...
+  
+  /* Runde starten */
+  engine.startRound();
+});
+
 
   /* Engine erstellen */
   engine = new GameEngine({
@@ -79,4 +98,5 @@ window.addEventListener("DOMContentLoaded", async () => {
   /* Runde starten */
   engine.startRound();
 });
+
 
