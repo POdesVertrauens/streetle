@@ -32,7 +32,7 @@ export class GameEngine {
      GEOJSON LADEN
   -------------------------------------------- */
 async loadData() {
-  const response = await fetch("data/berlin.geojson");
+  const response = await fetch("data/berlin-innenstadt.geojson");
   const json = await response.json();
 
   if (this.streetMode === "important") {
@@ -165,4 +165,5 @@ async loadData() {
     this.startRound();
   }
 }
+
 
