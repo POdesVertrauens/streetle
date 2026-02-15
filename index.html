@@ -2,65 +2,43 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Streetle Berlin – Spiel</title>
+  <title>Streetle – Start</title>
+
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Leaflet (wird erst im Spiel gebraucht) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Spiel-Logik -->
   <script src="script.js" defer></script>
 </head>
-<body>
-  <!-- Header mit Titel und Menü-Button -->
-  <header>
+
+<body class="startscreen">
+
+  <!-- HEADER -->
+  <header class="start-header">
     <h1>Streetle</h1>
-    <button id="menuToggle">☰ Menü</button>
   </header>
 
-  <!-- Seitenmenü für Schwierigkeit -->
-  <div id="sideMenu" class="side-menu">
-    <h2>Schwierigkeit wählen</h2>
-    <label>
-      <input type="radio" name="difficulty" value="leicht" checked>
-      🎯 Leicht (Top 100 Straßen)
-    </label>
-    <label>
-      <input type="radio" name="difficulty" value="schwer">
-      🔥 Schwer (alle Straßen)
-    </label>
-  </div>
+  <!-- STARTSEITE -->
+  <main class="start-container">
 
-  <!-- Hauptbereich -->
-  <main>
-    <div id="game-container">
-      <!-- Karte -->
-      <div id="map"></div>
+    <!-- SPIELMODUS -->
+    <section class="mode-section">
+      <div class="mode-card" id="singleplayer">Singleplayer</div>
+      <div class="mode-card" id="multiplayer">Multiplayer</div>
+    </section>
 
-      <!-- Steuerung -->
-      <div id="controls">
-        <!-- Neues Spiel starten -->
-        <button id="newGameButton" onclick="neuesSpiel()">🆕 Neues Spiel starten</button>
+    <!-- SCHWIERIGKEIT: Kontext -->
+    <section class="toggle-section">
+      <h2>Schwierigkeitsgrad</h2>
 
-        <!-- Eingabe + Tipp + Neue Straße -->
-        <div id="input-row">
-          <button id="tippButton" onclick="zeigeTipp()">💡 Tipp anzeigen</button>
-
-          <div class="input-wrapper">
-            <input type="text" id="guessInput" placeholder="Straßenname eingeben..."
-                   oninput="zeigeVorschlaege(this.value)">
-            <span class="clear-btn"
-                  onclick="document.getElementById('guessInput').value=''; 
-                           document.getElementById('vorschlagBox').innerHTML=''">×</span>
-            <div id="vorschlagBox" class="dropdown"></div>
-          </div>
-
-          <button onclick="neueStrasse()">⟳ Neue Straße</button>
-        </div>
-
-        <!-- Rate-Button + Feedback -->
-        <button id="rateButton" onclick="guess()">Raten</button>
-        <p id="feedback"></p>
-        <div id="tippBox"></div>
+      <div class="toggle-card">
+        <span>Mit Kontext (Straßennamen sichtbar)</span>
+        <input type="radio" name="contextMode" id="contextOn">
       </div>
-    </div>
-  </main>
-</body>
-</html>
+
+      <div class="toggle-card">
+        <span>Ohne Kontext (keine Straßennamen)</span>
