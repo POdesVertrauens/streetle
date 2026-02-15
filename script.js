@@ -1,13 +1,10 @@
-/* ===========================
-   GLOBAL VARS
-=========================== */
+/* ===== GLOBAL VARS ===== */
 
 let map;
 let featureLayer;
 let alleFeatures = [];
 let aktuelleStrasse;
 
-let schwierigkeit = "leicht";
 let streetMode = "all";
 let contextMode = "withLabels";
 
@@ -16,6 +13,10 @@ let punkteGesamt = 0;
 let fehlversuche = 0;
 let tippStufe = 0;
 
+let isMultiplayer = false;
+let gameId = null;
+let playerId = null;
+
 const wichtigeStrassen = [
   "Friedrichstraße", "Unter den Linden", "Karl-Marx-Allee",
   "Kurfürstendamm", "Tauentzienstraße", "Alexanderplatz",
@@ -23,9 +24,7 @@ const wichtigeStrassen = [
   "Schönhauser Allee", "Karl-Liebknecht-Straße", "Straße des 17. Juni"
 ];
 
-/* ===========================
-   HELPERS
-=========================== */
+/* ===== HELPERS ===== */
 
 function normalizeName(name) {
   return (name || "")
@@ -38,6 +37,7 @@ function normalizeName(name) {
 
 function setFeedback(text, color) {
   const el = document.getElementById("feedback");
+  if (!el) return;
   el.textContent = text;
   el.style.color = color || "inherit";
 }
@@ -47,41 +47,73 @@ function isMatch(a, b) {
   return a.replace(/[\s-]/g, "") === b.replace(/[\s-]/g, "");
 }
 
-/* ===========================
-   STARTSCREEN → GAME
-=========================== */
+function randomId(len = 6) {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let out = "";
+  for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  return out;
+}
+
+/* ===== STARTSCREEN LOGIK ===== */
 
 window.addEventListener("load", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const joinGameId = urlParams.get("game");
+
   document.getElementById("singleplayer").addEventListener("click", () => {
-    document.querySelector(".startscreen").style.display = "none";
-    document.getElementById("gameScreen").style.display = "block";
-
-    contextMode = document.getElementById("contextOn").checked ? "withLabels" : "noLabels";
-    streetMode = document.getElementById("majorStreets").checked ? "major" : "all";
-
-    initMap();
-    loadGeoJSON().then(() => neuesSpiel());
+    isMultiplayer = false;
+    startGameFromStartscreen();
   });
+
+  document.getElementById("multiplayer").addEventListener("click", () => {
+    document.getElementById("mpSection").style.display = "block";
+  });
+
+  document.getElementById("createPartyBtn").addEventListener("click", () => {
+    isMultiplayer = true;
+    gameId = randomId();
+    playerId = randomId(4);
+
+    const baseUrl = window.location.origin + window.location.pathname;
+    const link = `${baseUrl}?game=${gameId}`;
+    document.getElementById("partyLinkInfo").textContent = `Link zum Teilen: ${link}`;
+    document.getElementById("partyStatus").textContent = `Party erstellt (ID: ${gameId}). Warte auf Mitspieler…`;
+
+    initMultiplayerHost(gameId);
+  });
+
+  if (joinGameId) {
+    isMultiplayer = true;
+    gameId = joinGameId;
+    playerId = randomId(4);
+    joinMultiplayerGame(gameId);
+  }
 });
 
-/* ===========================
-   MAP + GEOJSON
-=========================== */
+function startGameFromStartscreen() {
+  document.querySelector(".startscreen").style.display = "none";
+  document.getElementById("gameScreen").style.display = "block";
+
+  contextMode = document.getElementById("contextOn").checked ? "withLabels" : "noLabels";
+  streetMode = document.getElementById("majorStreets").checked ? "major" : "all";
+
+  initMap();
+  loadGeoJSON().then(() => neuesSpiel());
+}
+
+/* ===== MAP + GEOJSON ===== */
 
 function initMap() {
   map = L.map('map').setView([52.52, 13.405], 12);
 
-  if (contextMode === "withLabels") {
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '© OpenStreetMap © CARTO',
-      subdomains: 'abcd'
-    }).addTo(map);
-  } else {
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-      attribution: '© OpenStreetMap © CARTO',
-      subdomains: 'abcd'
-    }).addTo(map);
-  }
+  const url = contextMode === "withLabels"
+    ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
+
+  L.tileLayer(url, {
+    attribution: '© OpenStreetMap © CARTO',
+    subdomains: 'abcd'
+  }).addTo(map);
 }
 
 async function loadGeoJSON() {
@@ -90,9 +122,7 @@ async function loadGeoJSON() {
   alleFeatures = data.features.filter(f => f.properties.strassenna);
 }
 
-/* ===========================
-   GAME LOGIC
-=========================== */
+/* ===== GAME LOGIC ===== */
 
 function neuesSpiel() {
   aktuelleRunde = 0;
@@ -125,6 +155,14 @@ function neueStrasse() {
     const bounds = featureLayer.getBounds();
     if (bounds.isValid()) map.fitBounds(bounds.pad(0.2));
   } catch {}
+
+  if (isMultiplayer && window.streetleFirebase && gameId) {
+    const { db, ref, update } = window.streetleFirebase;
+    update(ref(db, `games/${gameId}`), {
+      currentStreetName: aktuelleStrasse.properties.strassenna,
+      currentRound: aktuelleRunde
+    });
+  }
 }
 
 function guess() {
@@ -137,6 +175,15 @@ function guess() {
     let punkte = [3, 2, 1][tippStufe] || 0;
     punkteGesamt += punkte;
     setFeedback(`Richtig! +${punkte} Punkte`, "green");
+
+    if (isMultiplayer && window.streetleFirebase && gameId && playerId) {
+      const { db, ref, update } = window.streetleFirebase;
+      update(ref(db, `games/${gameId}/players/${playerId}`), {
+        score: punkteGesamt,
+        lastGuessCorrect: true
+      });
+    }
+
     setTimeout(nextTeilspiel, 1200);
   } else {
     fehlversuche++;
@@ -185,5 +232,69 @@ function zeigeVorschlaege(query) {
       box.innerHTML = "";
     };
     box.appendChild(div);
+  });
+}
+
+/* ===== MULTIPLAYER (Firebase) ===== */
+
+function initMultiplayerHost(id) {
+  if (!window.streetleFirebase) return;
+  const { db, ref, set, onValue } = window.streetleFirebase;
+
+  set(ref(db, `games/${id}`), {
+    createdAt: Date.now(),
+    currentRound: 0,
+    currentStreetName: null
+  });
+
+  onValue(ref(db, `games/${id}/players`), snap => {
+    const players = snap.val() || {};
+    const names = Object.keys(players);
+    document.getElementById("partyStatus").textContent =
+      `Spieler in der Lobby: ${names.length}`;
+  });
+}
+
+function joinMultiplayerGame(id) {
+  if (!window.streetleFirebase) return;
+  const { db, ref, set, onValue } = window.streetleFirebase;
+
+  document.querySelector(".startscreen").style.display = "none";
+  document.getElementById("gameScreen").style.display = "block";
+
+  contextMode = "withLabels";
+  streetMode = "all";
+
+  initMap();
+  loadGeoJSON().then(() => {
+    set(ref(db, `games/${id}/players/${playerId}`), {
+      joinedAt: Date.now(),
+      score: 0
+    });
+
+    onValue(ref(db, `games/${id}`), snap => {
+      const game = snap.val();
+      if (!game) return;
+
+      const infoEl = document.getElementById("mpInfo");
+      if (infoEl) {
+        infoEl.textContent = `Multiplayer – Game ID: ${id}`;
+      }
+
+      if (game.currentStreetName && (!aktuelleStrasse || aktuelleStrasse.properties.strassenna !== game.currentStreetName)) {
+        const match = alleFeatures.find(f => f.properties.strassenna === game.currentStreetName);
+        if (match) {
+          aktuelleStrasse = match;
+          if (featureLayer) map.removeLayer(featureLayer);
+          featureLayer = L.geoJSON(aktuelleStrasse, { style: { color: "red", weight: 4 } }).addTo(map);
+          try {
+            const bounds = featureLayer.getBounds();
+            if (bounds.isValid()) map.fitBounds(bounds.pad(0.2));
+          } catch {}
+        }
+      }
+    });
+
+    neuesSpiel();
   });
 }
