@@ -1,35 +1,31 @@
-/* ============================================
-   SINGLEPLAYER — verbindet UI + GameEngine + Map
-   ============================================ */
-
 import { GameEngine } from "./game-engine.js";
-import { setupSuggestions, setText } from "./ui.js";
-import { initMap } from "./map.js";
+import { initMap, highlightStreet } from "./map.js";
+import { setupSuggestions } from "./suggestions.js";
 
-let engine = null;
+/* -----------------------------
+   INITIALISIERUNG
+------------------------------ */
 
-window.addEventListener("DOMContentLoaded", async () => {
-  /* Einstellungen aus index.html holen */
+async function init() {
+  // URL-Parameter lesen
   const params = new URLSearchParams(window.location.search);
-
-  const contextMode = params.get("context") || "withContext";
   const streetMode = params.get("streets") || "all";
-  const roundTime = Number(params.get("time") || 60);
+  const contextMode = params.get("context") || "withContext";
+  const timeLimit = parseInt(params.get("time")) || 60;
 
-  /* ⭐ Karte zuerst initialisieren */
-  initMap(contextMode);
+  // Engine erzeugen
+  const engine = new GameEngine(streetMode);
 
-  /* Engine erstellen */
-  engine = new GameEngine({
-    contextMode,
-    streetMode,
-    roundTime
-  });
-
-  /* GeoJSON laden */
+  // 1) Daten laden (WICHTIG: await!)
   await engine.loadData();
 
-  /* Vorschläge vorbereiten */
+  // 2) Map initialisieren
+  initMap(contextMode);
+
+  // 3) Zufallsstraße wählen
+  engine.pickRandomStreet();
+
+  // 4) Vorschläge vorbereiten
   const allNames = engine.allFeatures.map(f => f.properties.strassenna);
   setupSuggestions(
     document.getElementById("guessInput"),
@@ -37,48 +33,99 @@ window.addEventListener("DOMContentLoaded", async () => {
     allNames
   );
 
-  /* UI Elemente */
-  const roundInfo = document.getElementById("roundInfo");
-  const timer = document.getElementById("timer");
-  const points = document.getElementById("points");
+  // 5) Timer starten
+  startTimer(timeLimit, engine);
+
+  // 6) Event Listener setzen
+  setupGuessHandler(engine);
+}
+
+init();
+
+/* -----------------------------
+   TIMER
+------------------------------ */
+
+function startTimer(seconds, engine) {
+  let remaining = seconds;
+  const timerEl = document.getElementById("timer");
+
+  timerEl.textContent = remaining;
+
+  const interval = setInterval(() => {
+    remaining--;
+    timerEl.textContent = remaining;
+
+    if (remaining <= 0) {
+      clearInterval(interval);
+      endRound(engine, false);
+    }
+  }, 1000);
+}
+
+/* -----------------------------
+   GUESS HANDLING
+------------------------------ */
+
+function setupGuessHandler(engine) {
+  const input = document.getElementById("guessInput");
+  const button = document.getElementById("guessButton");
+
+  button.addEventListener("click", () => {
+    checkGuess(engine, input.value.trim());
+  });
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      checkGuess(engine, input.value.trim());
+    }
+  });
+}
+
+function checkGuess(engine, guess) {
+  if (!guess) return;
+
+  const correct = engine.currentStreet.properties.strassenna;
+
+  if (guess.toLowerCase() === correct.toLowerCase()) {
+    endRound(engine, true);
+  } else {
+    document.getElementById("feedback").textContent = "Falsch!";
+  }
+}
+
+/* -----------------------------
+   RUNDE BEENDEN
+------------------------------ */
+
+function endRound(engine, success) {
   const feedback = document.getElementById("feedback");
+  const correctName = engine.currentStreet.properties.strassenna;
 
-  /* Engine Events */
-  engine.onTick = (time) => {
-    setText(timer, time);
-  };
+  if (success) {
+    feedback.textContent = "Richtig!";
+  } else {
+    feedback.textContent = `Zeit abgelaufen! Richtige Antwort: ${correctName}`;
+  }
 
-  engine.onRoundEnd = (data) => {
-    feedback.textContent = data.correct
-      ? `Richtig! +${data.points} Punkte`
-      : `Falsch! Die Lösung war: ${data.street}`;
+  // Straße auf der Karte hervorheben
+  highlightStreet(engine.currentStreet);
 
-    setTimeout(() => {
-      engine.nextRound();
-    }, 1500);
-  };
+  // Button für nächste Runde
+  document.getElementById("nextButton").style.display = "block";
+  document.getElementById("nextButton").onclick = () => nextRound(engine);
+}
 
-  engine.onGameEnd = (data) => {
-    feedback.textContent = `Spiel beendet! Gesamtpunkte: ${data.total}`;
-  };
+function nextRound(engine) {
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("nextButton").style.display = "none";
 
-  /* Buttons */
-  document.getElementById("btnGuess").onclick = () => {
-    const val = document.getElementById("guessInput").value;
-    engine.guess(val);
-  };
+  engine.pickRandomStreet();
 
-  document.getElementById("btnHint1").onclick = () => {
-    const hint = engine.useHint1();
-    if (hint) feedback.textContent = `Hinweis: beginnt mit "${hint}"`;
-  };
-
-  document.getElementById("btnHint2").onclick = () => {
-    const hint = engine.useHint2();
-    if (hint) feedback.textContent = `Hinweis: beginnt mit "${hint}"`;
-  };
-
-  /* ⭐ Runde starten — jetzt ist Map garantiert initialisiert */
-  engine.startRound();
-});
-
+  const allNames = engine.allFeatures.map(f => f.properties.strassenna);
+  setupSuggestions(
+    document.getElementById("guessInput"),
+    document.getElementById("suggestions"),
+    allNames
+  );
+}
