@@ -42,3 +42,83 @@
 
       <div class="toggle-card">
         <span>Ohne Kontext (keine Straßennamen)</span>
+        <input type="radio" name="contextMode" id="contextOff">
+      </div>
+    </section>
+
+    <!-- STRASSENUMFANG -->
+    <section class="toggle-section">
+      <h2>Straßenumfang</h2>
+
+      <div class="toggle-card">
+        <span>Nur große Straßen & Plätze</span>
+        <input type="radio" name="streetMode" id="majorStreets">
+      </div>
+
+      <div class="toggle-card">
+        <span>Alle Straßen & Plätze</span>
+        <input type="radio" name="streetMode" id="allStreets">
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SPIELBEREICH (wird erst sichtbar, wenn Singleplayer gestartet wird) -->
+  <main id="gameScreen" style="display:none;">
+
+    <header>
+      <h1>Streetle</h1>
+      <button id="menuToggle">☰ Menü</button>
+    </header>
+
+    <div id="sideMenu" class="side-menu">
+      <h2>Schwierigkeit wählen</h2>
+      <label><input type="radio" name="difficulty" value="leicht" checked> 🎯 Leicht</label>
+      <label><input type="radio" name="difficulty" value="schwer"> 🔥 Schwer</label>
+    </div>
+
+    <div id="game-container">
+      <div id="map"></div>
+
+      <div id="controls">
+        <button id="newGameButton" onclick="neuesSpiel()">🆕 Neues Spiel starten</button>
+
+        <div id="input-row">
+          <button id="tippButton" onclick="zeigeTipp()">💡 Tipp anzeigen</button>
+
+          <div class="input-wrapper">
+            <input type="text" id="guessInput" placeholder="Straßenname eingeben..." oninput="zeigeVorschlaege(this.value)">
+            <span class="clear-btn" onclick="guessInput.value=''; vorschlagBox.innerHTML=''">×</span>
+            <div id="vorschlagBox" class="dropdown"></div>
+          </div>
+
+          <button onclick="neueStrasse()">⟳ Neue Straße</button>
+        </div>
+
+        <button id="rateButton" onclick="guess()">Raten</button>
+        <p id="feedback"></p>
+        <div id="tippBox"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Umschalten von Startscreen → Spielscreen
+    document.getElementById("singleplayer").addEventListener("click", () => {
+      document.querySelector(".startscreen").style.display = "none";
+      document.getElementById("gameScreen").style.display = "block";
+
+      // Einstellungen an script.js übergeben
+      window.streetleConfig = {
+        context: document.getElementById("contextOn").checked ? "withLabels" : "noLabels",
+        streetMode: document.getElementById("majorStreets").checked ? "major" : "all"
+      };
+
+      // Spiel starten
+      neuesSpiel();
+    });
+  </script>
+
+</body>
+</html>
