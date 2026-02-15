@@ -1,9 +1,9 @@
-// firebase.js – als ES Module eingebunden
+// firebase.js – ES Module
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-// TODO: HIER deine eigene Firebase Config eintragen
+// 🔥 HIER DEINE EIGENE FIREBASE CONFIG EINTRAGEN
 const firebaseConfig = {
   apiKey: "DEIN_API_KEY",
   authDomain: "DEIN_PROJECT.firebaseapp.com",
@@ -17,7 +17,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Globale Helfer für script.js
 window.streetleFirebase = {
   db,
   ref,
