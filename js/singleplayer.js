@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   /* Einstellungen aus index.html holen */
   const params = new URLSearchParams(window.location.search);
 
-  const contextMode = params.get("context") || "with";
+  const contextMode = params.get("context") || "withContext";
   const streetMode = params.get("streets") || "all";
   const roundTime = Number(params.get("time") || 60);
 
@@ -81,3 +81,4 @@ window.addEventListener("DOMContentLoaded", async () => {
   /* ⭐ Runde starten — jetzt ist Map garantiert initialisiert */
   engine.startRound();
 });
+
