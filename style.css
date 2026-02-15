@@ -149,4 +149,23 @@ button:hover {
   background: #000;
   color: #fff;
 }
+/* ===========================
+   GLOBAL
+=========================== */
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #000;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+/* ===========================
+   STARTSCREEN
+=========================== */
+
+.startscreen .start-header {
+  background
 
