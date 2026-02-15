@@ -1,37 +1,98 @@
-// Menü öffnen/schließen
-document.getElementById("menuToggle").addEventListener("click", () => {
-  document.getElementById("sideMenu").classList.toggle("open");
-});
+/* ===========================
+   GLOBAL VARS
+=========================== */
 
-// Schwierigkeit ändern
-document.querySelectorAll("input[name='difficulty']").forEach(radio => {
-  radio.addEventListener("change", (e) => {
-    schwierigkeit = e.target.value;
+let map;
+let featureLayer;
+let alleFeatures = [];
+let aktuelleStrasse;
 
-    // Filter anwenden
-    if (schwierigkeit === "leicht") {
-      alleFeatures = alleFeatures.filter(f =>
-        wichtigeStrassen.includes(f.properties.strassenna)
-      );
-    } else {
-      // schwer = alle Straßen wieder laden
-      fetch('berlin-innenstadt.geojson')
-        .then(res => res.json())
-        .then(data => {
-          alleFeatures = data.features.filter(f => f.properties.strassenna);
-          neueStrasse();
-        });
-      return;
-    }
+let schwierigkeit = "leicht";
+let streetMode = "all";
+let contextMode = "withLabels";
 
-    // Neue Runde starten
-    neueStrasse();
+let aktuelleRunde = 0;
+let punkteGesamt = 0;
+let fehlversuche = 0;
+let tippStufe = 0;
+
+const wichtigeStrassen = [
+  "Friedrichstraße", "Unter den Linden", "Karl-Marx-Allee",
+  "Kurfürstendamm", "Tauentzienstraße", "Alexanderplatz",
+  "Potsdamer Platz", "Leipziger Straße", "Oranienstraße",
+  "Schönhauser Allee", "Karl-Liebknecht-Straße", "Straße des 17. Juni"
+];
+
+/* ===========================
+   HELPERS
+=========================== */
+
+function normalizeName(name) {
+  return (name || "")
+    .toLowerCase()
+    .replace(/ß/g, "ss")
+    .replace(/\s*\(.*?\)\s*/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function setFeedback(text, color) {
+  const el = document.getElementById("feedback");
+  el.textContent = text;
+  el.style.color = color || "inherit";
+}
+
+function isMatch(a, b) {
+  if (a === b) return true;
+  return a.replace(/[\s-]/g, "") === b.replace(/[\s-]/g, "");
+}
+
+/* ===========================
+   STARTSCREEN → GAME
+=========================== */
+
+window.addEventListener("load", () => {
+  document.getElementById("singleplayer").addEventListener("click", () => {
+    document.querySelector(".startscreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
+
+    contextMode = document.getElementById("contextOn").checked ? "withLabels" : "noLabels";
+    streetMode = document.getElementById("majorStreets").checked ? "major" : "all";
+
+    initMap();
+    loadGeoJSON().then(() => neuesSpiel());
   });
 });
 
-let aktuelleRunde = 0;       // Zähler für Teilspiele (0–4)
-let punkteGesamt = 0;        // Gesamtpunkte in der Runde
-let fehlversuche = 0;        // Fehlversuche pro Teilspiel
+/* ===========================
+   MAP + GEOJSON
+=========================== */
+
+function initMap() {
+  map = L.map('map').setView([52.52, 13.405], 12);
+
+  if (contextMode === "withLabels") {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap © CARTO',
+      subdomains: 'abcd'
+    }).addTo(map);
+  } else {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap © CARTO',
+      subdomains: 'abcd'
+    }).addTo(map);
+  }
+}
+
+async function loadGeoJSON() {
+  const res = await fetch("berlin-innenstadt.geojson");
+  const data = await res.json();
+  alleFeatures = data.features.filter(f => f.properties.strassenna);
+}
+
+/* ===========================
+   GAME LOGIC
+=========================== */
 
 function neuesSpiel() {
   aktuelleRunde = 0;
@@ -39,306 +100,90 @@ function neuesSpiel() {
   starteTeilspiel();
 }
 
-function guess() {
-  const input = document.getElementById("guessInput").value.trim().toLowerCase();
-  if (!aktuelleStrasse) return;
+function starteTeilspiel() {
+  fehlversuche = 0;
+  tippStufe = 0;
+  neueStrasse();
+  setFeedback(`Teilspiel ${aktuelleRunde + 1} von 5 – Punkte: ${punkteGesamt}`);
+}
 
-  const zielname = (aktuelleStrasse.properties.strassenna || "").toLowerCase();
-  const feedback = document.getElementById("feedback");
+function neueStrasse() {
+  let pool = alleFeatures;
+
+  if (streetMode === "major") {
+    const wichtigeNorm = new Set(wichtigeStrassen.map(normalizeName));
+    pool = alleFeatures.filter(f => wichtigeNorm.has(normalizeName(f.properties.strassenna)));
+  }
+
+  aktuelleStrasse = pool[Math.floor(Math.random() * pool.length)];
+
+  if (featureLayer) map.removeLayer(featureLayer);
+
+  featureLayer = L.geoJSON(aktuelleStrasse, { style: { color: "red", weight: 4 } }).addTo(map);
+
+  try {
+    const bounds = featureLayer.getBounds();
+    if (bounds.isValid()) map.fitBounds(bounds.pad(0.2));
+  } catch {}
+}
+
+function guess() {
+  const input = normalizeName(document.getElementById("guessInput").value);
+  const ziel = normalizeName(aktuelleStrasse.properties.strassenna);
 
   if (!input) return;
 
-  if (istAehnlich(input, zielname)) {
-    let punkte = 0;
-    if (tippStufe === 0) punkte = 3;
-    else if (tippStufe === 1) punkte = 2;
-    else if (tippStufe === 2) punkte = 1;
-
+  if (isMatch(input, ziel)) {
+    let punkte = [3, 2, 1][tippStufe] || 0;
     punkteGesamt += punkte;
-    feedback.textContent = `✅ Richtig! +${punkte} Punkte (Gesamt: ${punkteGesamt})`;
-    feedback.style.color = "green";
-
-    setTimeout(nextTeilspiel, 1500);
+    setFeedback(`Richtig! +${punkte} Punkte`, "green");
+    setTimeout(nextTeilspiel, 1200);
   } else {
     fehlversuche++;
     if (fehlversuche >= 3) {
-      feedback.textContent = `❌ 3 Fehlversuche – Lösung: ${aktuelleStrasse.properties.strassenna}`;
-      feedback.style.color = "red";
-      setTimeout(nextTeilspiel, 2000);
+      setFeedback(`Falsch! Lösung: ${aktuelleStrasse.properties.strassenna}`, "red");
+      setTimeout(nextTeilspiel, 1500);
     } else {
-      feedback.textContent = `❌ Versuch ${fehlversuche} – nochmal probieren!`;
-      feedback.style.color = "red";
+      setFeedback(`Falsch – Versuch ${fehlversuche}`, "red");
     }
   }
 }
 
 function nextTeilspiel() {
   aktuelleRunde++;
-  if (aktuelleRunde < 5) {
-    starteTeilspiel();
-  } else {
-    document.getElementById("feedback").textContent =
-      `🏆 Runde beendet! Gesamtpunkte: ${punkteGesamt} von 15`;
-    document.getElementById("feedback").style.color = "blue";
-  }
+  if (aktuelleRunde < 5) starteTeilspiel();
+  else setFeedback(`Runde beendet! Gesamtpunkte: ${punkteGesamt}`, "blue");
 }
 
-function starteTeilspiel() {
-  fehlversuche = 0;
-  neueStrasse(); // deine bestehende Funktion
-  document.getElementById("feedback").textContent = 
-    `Teilspiel ${aktuelleRunde+1} von 5 – Punkte bisher: ${punkteGesamt}`;
-}
+function zeigeTipp() {
+  const name = aktuelleStrasse.properties.strassenna;
+  const box = document.getElementById("tippBox");
 
-// 🗺️ Karte initialisieren
-const map = L.map('map').setView([52.52, 13.405], 12);
-
-// 🌍 Schwarz-Weiß Tile-Layer ohne Labels
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap contributors © CARTO',
-  subdomains: 'abcd',
-  maxZoom: 20
-}).addTo(map);
-
-// 🔁 Spielstatus
-let alleFeatures = [];
-let aktuelleStrasse = null;
-let aktuelleLayer = null;
-let tippStufe = 0;
-let schwierigkeit = "leicht";
-
-// 📥 GeoJSON laden
-fetch('berlin-innenstadt.geojson')
-  .then(res => res.json())
-  .then(data => {
-    alleFeatures = data.features.filter(f => f.properties && f.properties.strassenna);
-    neueStrasse();
-  });
-
-// 🎯 Neue Straße auswählen und anzeigen
-function neueStrasse() {
-  if (aktuelleLayer) {
-    map.removeLayer(aktuelleLayer);
+  if (tippStufe === 0) {
+    box.innerHTML = `<p>Erster Buchstabe: <strong>${name[0]}</strong></p>`;
+  } else if (tippStufe === 1) {
+    box.innerHTML += `<p>Länge: <strong>${name.length}</strong> Zeichen</p>`;
   }
 
-  aktuelleStrasse = alleFeatures[Math.floor(Math.random() * alleFeatures.length)];
-
-  aktuelleLayer = L.geoJSON(aktuelleStrasse, {
-    style: { color: "red", weight: 8 }
-  }).addTo(map);
-
-  map.fitBounds(aktuelleLayer.getBounds());
-
-  // UI reset
-  document.getElementById("feedback").textContent = "";
-  document.getElementById("guessInput").value = "";
-
-  // 💡 Tipp zurücksetzen
-  tippStufe = 0;
-  const btn = document.getElementById("tippButton");
-  if (btn) btn.innerText = "💡 Tipp anzeigen";
-  document.getElementById("tippBox").innerText = "";
+  tippStufe = Math.min(2, tippStufe + 1);
 }
 
-// 🧪 Ratefunktion mit Toleranz
-function guess() {
-  const input = document.getElementById("guessInput").value.trim().toLowerCase();
-  if (!aktuelleStrasse) return;
-
-  const zielname = (aktuelleStrasse.properties.strassenna || "").toLowerCase();
-  const feedback = document.getElementById("feedback");
-
-  if (!input) return;
-
-  if (istAehnlich(input, zielname)) {
-    feedback.textContent = "✅ Richtig!";
-    feedback.style.color = "green";
-    setTimeout(neueStrasse, 1500);
-  } else {
-    feedback.textContent = "❌ Leider falsch.";
-    feedback.style.color = "red";
-  }
-}
-
-// Liste der wichtigsten Straßen
-const wichtigeStrassen = [
-  "Friedrichstraße",
-  "Unter den Linden",
-  "Karl-Marx-Allee",
-  "Gneisenaustraße",
-  "Mehringdamm",
-  "Prenzlauer Allee",
-  "Frankfurter Allee",
-  "Kantstraße",
-  "Kurfürstendamm",
-  "Alexanderplatz",
-  "Potsdamer Platz",
-  "Leipziger Straße",
-  "Torstraße",
-  "Oranienstraße",
-  "Schönhauser Allee",
-  "Müllerstraße",
-  "Seestraße",
-  "Tempelhofer Damm",
-  "Hermannstraße",
-  "Karl-Liebknecht-Straße",
-  "Straße des 17. Juni",
-  "Wilhelmstraße",
-  "Invalidenstraße",
-  "Greifswalder Straße",
-  "Oberbaumbrücke",
-  "Alt-Moabit",
-  "Heidestraße",
-  "Chausseestraße",
-  "Landsberger Allee",
-  "Hasenheide",
-  "Adalbertstraße",
-  "Skalitzer Straße",
-  "Warschauer Straße",
-  "Boxhagener Straße",
-  "Karl-Marx-Straße",
-  "Sonnenallee",
-  "Revaler Straße",
-  "Frankfurter Tor",
-  "Straßburger Straße",
-  "Kottbusser Damm",
-  "Urbanstraße",
-  "Grunewaldstraße",
-  "Bismarckstraße",
-  "Spandauer Damm",
-  "Breite Straße",  
-  "Turmstraße",
-  "Birkenstraße",
-  "Schloßstraße",
-  "Stuttgarter Platz",
-  "Fasanenstraße",
-  "Bülowstraße",
-  "Motzstraße",
-  "Potsdamer Straße",
-  "Oranienburger Straße",
-  "Zionskirchplatz",
-  "Ludwigkirchplatz",
-  "Pariser Platz",
-  "Hackescher Markt",
-  "Rosenthaler Platz",
-  "Boxhagener Platz",
-  "Mauerpark",
-  "Savignyplatz",
-  "Nollendorfplatz",
-  "Kollwitzplatz",
-  "Kollwitzstraße",
-  "Helmholtzplatz",
-  "Görlitzer Straße",
-  "Schlesische Straße",
-  "Breitscheidplatz",
-  "Budapester Straße",
-  "Tauentzienstraße",
-  "Hauptstraße",
-  "Wiener Straße",
-  "Reichenberger Straße",
-  "Graefestraße",
-  "Hermannplatz",
-  "Holzmarktstraße"
-];
-
-// Filter anwenden
-if (schwierigkeit === "leicht") {
-  alleFeatures = alleFeatures.filter(f =>
-    wichtigeStrassen.includes(f.properties.strassenna)
-  );
-}
-
-function normalizeName(name) {
-  return name
-    .toLowerCase()
-    .replace("ß", "ss")
-    .trim();
-}
-
-if (schwierigkeit === "leicht") {
-  alleFeatures = alleFeatures.filter(f => {
-    const streetName = normalizeName(f.properties.strassenna || "");
-    return wichtigeStrassen.some(w => normalizeName(w) === streetName);
-  });
-}
-
-// 🔍 Autocomplete Vorschläge
-function zeigeVorschlaege(eingabe) {
+function zeigeVorschlaege(query) {
   const box = document.getElementById("vorschlagBox");
   box.innerHTML = "";
+  query = normalizeName(query);
+  if (!query) return;
 
-  if (eingabe.length < 2) return; // erst ab 2 Buchstaben
+  const names = alleFeatures.map(f => f.properties.strassenna);
+  const filtered = names.filter(n => normalizeName(n).includes(query)).slice(0, 10);
 
-  const matches = alleFeatures
-    .map(f => f.properties.strassenna)
-    .filter(name => name && name.toLowerCase().startsWith(eingabe.toLowerCase()))
-    .slice(0, 10); // max. 10 Vorschläge
-
-  matches.forEach(name => {
+  filtered.forEach(n => {
     const div = document.createElement("div");
-    div.innerText = name;
+    div.textContent = n;
     div.onclick = () => {
-      document.getElementById("guessInput").value = name;
+      document.getElementById("guessInput").value = n;
       box.innerHTML = "";
     };
     box.appendChild(div);
   });
 }
-
-// 💡 Tipp-Logik (2-stufig: 1 Buchstabe, dann 3 Buchstaben)
-function zeigeTipp() {
-  if (!aktuelleStrasse) return;
-  const btn = document.getElementById("tippButton");
-  const name = aktuelleStrasse.properties.strassenna || "";
-
-  if (tippStufe === 0) {
-    // 1. Tipp: erster Buchstabe
-    document.getElementById("tippBox").innerText =
-      "Die Straße beginnt mit " + name.substring(0, 1);
-    if (btn) btn.innerText = "Weiteren Tipp erhalten";
-    tippStufe = 1;
-  } else if (tippStufe === 1) {
-    // 2. Tipp: erste drei Buchstaben
-    document.getElementById("tippBox").innerText =
-      "Die Straße beginnt mit " + name.substring(0, 3);
-    if (btn) btn.innerText = "Keine weiteren Tipps verfügbar";
-    tippStufe = 2;
-  } else {
-    // keine weiteren Tipps, Text bleibt wie er ist
-    if (btn) btn.innerText = "Keine weiteren Tipps verfügbar";
-  }
-}
-
-// 🔍 Toleranter Vergleich (Levenshtein-Distanz)
-function istAehnlich(a, b) {
-  const dist = levenshtein(a, b);
-  return dist <= 2 || b.includes(a) || a.includes(b);
-}
-
-// 🔢 Levenshtein-Distanz (vollständig geschlossen)
-function levenshtein(a, b) {
-  const matrix = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
-
-  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
-
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      const kosten = a[i - 1] === b[j - 1] ? 0 : 1;
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1,     // Löschung
-        matrix[i][j - 1] + 1,     // Einfügung
-        matrix[i - 1][j - 1] + kosten // Ersetzung
-      );
-    }
-  }
-
-  return matrix[a.length][b.length];
-}
-
-// ⌨️ ENTER als Absenden
-document.addEventListener("keydown", function(event) {
-  if (event.key === "Enter") {
-    guess();
-  }
-});
