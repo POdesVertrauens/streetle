@@ -31,7 +31,6 @@ export class GameEngine {
   /* --------------------------------------------
      GEOJSON LADEN
   -------------------------------------------- */
-import { WICHTIGE_STRASSEN } from "./config.js";
 
 async loadData() {
   const response = await fetch("data/berlin-innenstadt.geojson");
@@ -55,7 +54,7 @@ async loadData() {
     this.hint1Used = false;
     this.hint2Used = false;
 
-    const pool = this.streetMode === "major"
+    const pool = this.streetMode === "important"
       ? this.allFeatures.filter(f =>
           WICHTIGE_STRASSEN
             .map(normalizeName)
@@ -167,6 +166,7 @@ async loadData() {
     this.startRound();
   }
 }
+
 
 
 
