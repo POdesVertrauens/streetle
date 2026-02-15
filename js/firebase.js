@@ -1,23 +1,17 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getDatabase,
-  ref,
-  set,
-  update,
-  onValue
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+// firebase.js – sichere, CSP-kompatible Version
 
-const firebaseConfig = {
-  apiKey: "DEIN_API_KEY",
-  authDomain: "DEIN_AUTH_DOMAIN",
-  databaseURL: "DEINE_DB_URL",
-  projectId: "DEIN_PROJECT_ID",
-  storageBucket: "DEIN_STORAGE_BUCKET",
-  messagingSenderId: "DEINE_SENDER_ID",
-  appId: "DEINE_APP_ID"
-};
+// Wenn du Firebase noch nicht eingerichtet hast, verhindern wir Fehler:
+export const db = null;
 
-const app = initializeApp(firebaseConfig);
-export const db = getDatabase(app);
-
-export { ref, set, update, onValue };
+export function ref() {
+  console.warn("Firebase not configured.");
+}
+export function set() {
+  console.warn("Firebase not configured.");
+}
+export function update() {
+  console.warn("Firebase not configured.");
+}
+export function onValue() {
+  console.warn("Firebase not configured.");
+}
