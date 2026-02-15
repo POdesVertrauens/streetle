@@ -1,4 +1,6 @@
-/* ===== GLOBAL VARS ===== */
+/* ===========================
+   🎮 GLOBAL VARIABLEN
+=========================== */
 
 let map;
 let featureLayer;
@@ -24,7 +26,9 @@ const wichtigeStrassen = [
   "Schönhauser Allee", "Karl-Liebknecht-Straße", "Straße des 17. Juni"
 ];
 
-/* ===== HELPERS ===== */
+/* ===========================
+   🧰 HELFERFUNKTIONEN
+=========================== */
 
 function normalizeName(name) {
   return (name || "")
@@ -54,33 +58,49 @@ function randomId(len = 6) {
   return out;
 }
 
-/* ===== STARTSCREEN LOGIK ===== */
+/* ===========================
+   🚀 STARTSCREEN LOGIK
+=========================== */
 
 window.addEventListener("load", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const joinGameId = urlParams.get("game");
 
-  document.getElementById("singleplayer").addEventListener("click", () => {
-    isMultiplayer = false;
-    startGameFromStartscreen();
-  });
+  const singleBtn = document.getElementById("singleplayer");
+  const multiBtn = document.getElementById("multiplayer");
+  const mpSection = document.getElementById("mpSection");
+  const createPartyBtn = document.getElementById("createPartyBtn");
 
-  document.getElementById("multiplayer").addEventListener("click", () => {
-    document.getElementById("mpSection").style.display = "block";
-  });
+  if (singleBtn) {
+    singleBtn.addEventListener("click", () => {
+      isMultiplayer = false;
+      startGameFromStartscreen();
+    });
+  }
 
-  document.getElementById("createPartyBtn").addEventListener("click", () => {
-    isMultiplayer = true;
-    gameId = randomId();
-    playerId = randomId(4);
+  if (multiBtn && mpSection) {
+    multiBtn.addEventListener("click", () => {
+      mpSection.style.display = "block";
+    });
+  }
 
-    const baseUrl = window.location.origin + window.location.pathname;
-    const link = `${baseUrl}?game=${gameId}`;
-    document.getElementById("partyLinkInfo").textContent = `Link zum Teilen: ${link}`;
-    document.getElementById("partyStatus").textContent = `Party erstellt (ID: ${gameId}). Warte auf Mitspieler…`;
+  if (createPartyBtn) {
+    createPartyBtn.addEventListener("click", () => {
+      isMultiplayer = true;
+      gameId = randomId();
+      playerId = randomId(4);
 
-    initMultiplayerHost(gameId);
-  });
+      const baseUrl = window.location.origin + window.location.pathname;
+      const link = `${baseUrl}?game=${gameId}`;
+      const linkInfo = document.getElementById("partyLinkInfo");
+      const status = document.getElementById("partyStatus");
+
+      if (linkInfo) linkInfo.textContent = `Link zum Teilen: ${link}`;
+      if (status) status.textContent = `Party erstellt (ID: ${gameId}). Warte auf Mitspieler…`;
+
+      initMultiplayerHost(gameId);
+    });
+  }
 
   if (joinGameId) {
     isMultiplayer = true;
@@ -88,20 +108,33 @@ window.addEventListener("load", () => {
     playerId = randomId(4);
     joinMultiplayerGame(gameId);
   }
+
+  const menuToggle = document.getElementById("menuToggle");
+  const sideMenu = document.getElementById("sideMenu");
+  if (menuToggle && sideMenu) {
+    menuToggle.addEventListener("click", () => {
+      sideMenu.classList.toggle("open");
+    });
+  }
 });
 
 function startGameFromStartscreen() {
-  document.querySelector(".startscreen").style.display = "none";
-  document.getElementById("gameScreen").style.display = "block";
+  const startBody = document.querySelector(".startscreen");
+  const gameScreen = document.getElementById("gameScreen");
 
-  contextMode = document.getElementById("contextOn").checked ? "withLabels" : "noLabels";
-  streetMode = document.getElementById("majorStreets").checked ? "major" : "all";
+  if (startBody) startBody.style.display = "none";
+  if (gameScreen) gameScreen.style.display = "block";
+
+  contextMode = document.getElementById("contextOn")?.checked ? "withLabels" : "noLabels";
+  streetMode = document.getElementById("majorStreets")?.checked ? "major" : "all";
 
   initMap();
   loadGeoJSON().then(() => neuesSpiel());
 }
 
-/* ===== MAP + GEOJSON ===== */
+/* ===========================
+   🗺️ MAP + GEOJSON
+=========================== */
 
 function initMap() {
   map = L.map('map').setView([52.52, 13.405], 12);
@@ -117,12 +150,14 @@ function initMap() {
 }
 
 async function loadGeoJSON() {
-  const res = await fetch("berlin-innenstadt.geojson");
+  const res = await fetch("/streetle/berlin-innenstadt.geojson");
   const data = await res.json();
   alleFeatures = data.features.filter(f => f.properties.strassenna);
 }
 
-/* ===== GAME LOGIC ===== */
+/* ===========================
+   🎯 SPIELLOGIK
+=========================== */
 
 function neuesSpiel() {
   aktuelleRunde = 0;
@@ -145,6 +180,8 @@ function neueStrasse() {
     pool = alleFeatures.filter(f => wichtigeNorm.has(normalizeName(f.properties.strassenna)));
   }
 
+  if (!pool.length) return;
+
   aktuelleStrasse = pool[Math.floor(Math.random() * pool.length)];
 
   if (featureLayer) map.removeLayer(featureLayer);
@@ -166,7 +203,10 @@ function neueStrasse() {
 }
 
 function guess() {
-  const input = normalizeName(document.getElementById("guessInput").value);
+  const inputEl = document.getElementById("guessInput");
+  if (!inputEl || !aktuelleStrasse) return;
+
+  const input = normalizeName(inputEl.value);
   const ziel = normalizeName(aktuelleStrasse.properties.strassenna);
 
   if (!input) return;
@@ -203,8 +243,10 @@ function nextTeilspiel() {
 }
 
 function zeigeTipp() {
+  if (!aktuelleStrasse) return;
   const name = aktuelleStrasse.properties.strassenna;
   const box = document.getElementById("tippBox");
+  if (!box) return;
 
   if (tippStufe === 0) {
     box.innerHTML = `<p>Erster Buchstabe: <strong>${name[0]}</strong></p>`;
@@ -217,6 +259,7 @@ function zeigeTipp() {
 
 function zeigeVorschlaege(query) {
   const box = document.getElementById("vorschlagBox");
+  if (!box) return;
   box.innerHTML = "";
   query = normalizeName(query);
   if (!query) return;
@@ -228,14 +271,17 @@ function zeigeVorschlaege(query) {
     const div = document.createElement("div");
     div.textContent = n;
     div.onclick = () => {
-      document.getElementById("guessInput").value = n;
+      const input = document.getElementById("guessInput");
+      if (input) input.value = n;
       box.innerHTML = "";
     };
     box.appendChild(div);
   });
 }
 
-/* ===== MULTIPLAYER (Firebase) ===== */
+/* ===========================
+   👥 MULTIPLAYER (Firebase)
+=========================== */
 
 function initMultiplayerHost(id) {
   if (!window.streetleFirebase) return;
@@ -250,8 +296,8 @@ function initMultiplayerHost(id) {
   onValue(ref(db, `games/${id}/players`), snap => {
     const players = snap.val() || {};
     const names = Object.keys(players);
-    document.getElementById("partyStatus").textContent =
-      `Spieler in der Lobby: ${names.length}`;
+    const status = document.getElementById("partyStatus");
+    if (status) status.textContent = `Spieler in der Lobby: ${names.length}`;
   });
 }
 
@@ -259,8 +305,10 @@ function joinMultiplayerGame(id) {
   if (!window.streetleFirebase) return;
   const { db, ref, set, onValue } = window.streetleFirebase;
 
-  document.querySelector(".startscreen").style.display = "none";
-  document.getElementById("gameScreen").style.display = "block";
+  const startBody = document.querySelector(".startscreen");
+  const gameScreen = document.getElementById("gameScreen");
+  if (startBody) startBody.style.display = "none";
+  if (gameScreen) gameScreen.style.display = "block";
 
   contextMode = "withLabels";
   streetMode = "all";
@@ -277,11 +325,10 @@ function joinMultiplayerGame(id) {
       if (!game) return;
 
       const infoEl = document.getElementById("mpInfo");
-      if (infoEl) {
-        infoEl.textContent = `Multiplayer – Game ID: ${id}`;
-      }
+      if (infoEl) infoEl.textContent = `Multiplayer – Game ID: ${id}`;
 
-      if (game.currentStreetName && (!aktuelleStrasse || aktuelleStrasse.properties.strassenna !== game.currentStreetName)) {
+      if (game.currentStreetName &&
+          (!aktuelleStrasse || aktuelleStrasse.properties.strassenna !== game.currentStreetName)) {
         const match = alleFeatures.find(f => f.properties.strassenna === game.currentStreetName);
         if (match) {
           aktuelleStrasse = match;
