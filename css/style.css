@@ -1,202 +1,213 @@
 /* ============================================
-   GLOBAL DESIGN — Artsy, Schwarz-Weiß, Museum-Style
+   GLOBAL
    ============================================ */
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: #fff;
-  color: #000;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background: #f7f7f7;
+  color: #222;
 }
 
-.page-start,
-.page-game {
-  padding: 40px;
+h1, h2, h3, p {
+  margin: 0;
+  padding: 0;
 }
 
 /* ============================================
-   TYPOGRAFIE
+   HEADER
    ============================================ */
 
+.header {
+  padding: 20px 30px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
 .title {
-  font-size: 48px;
+  font-size: 32px;
   font-weight: 700;
-  letter-spacing: 2px;
-  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+  text-transform: none; /* kein STREETLE mehr */
+  color: #111;
 }
 
 .subtitle {
-  font-size: 18px;
-  opacity: 0.7;
-  margin-bottom: 40px;
-}
-
-.block-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
+  font-size: 16px;
+  color: #555;
+  margin-top: 4px;
 }
 
 /* ============================================
-   LAYOUT
+   STARTSEITE (index.html)
    ============================================ */
 
-.container {
-  max-width: 700px;
-  margin: auto;
+.page-start .container {
+  max-width: 600px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .block {
-  margin-bottom: 50px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-/* ============================================
-   BUTTONS — Option B (schwarzer Rahmen, 2px)
-   ============================================ */
-
-.btn-outline {
-  display: block;
-  width: 100%;
-  padding: 14px 20px;
-  margin-bottom: 15px;
-  border: 2px solid #000;
-  background: transparent;
-  color: #000;
-  font-size: 18px;
+.block-title {
+  font-size: 20px;
   font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  margin-bottom: 12px;
 }
-
-.btn-outline:hover {
-  background: #000;
-  color: #fff;
-}
-
-/* ============================================
-   FORM ELEMENTE
-   ============================================ */
 
 .radio-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  cursor: pointer;
+  gap: 10px;
+  margin: 6px 0;
 }
 
-.radio-row input[type="radio"] {
-  transform: scale(1.4);
+/* ============================================
+   GAME LAYOUT (singleplayer + multiplayer)
+   ============================================ */
+
+.page-game .container {
+  padding: 20px;
+}
+
+.game-layout {
+  display: flex;
+  gap: 20px;
+  height: calc(100vh - 120px); /* Header + Padding */
+}
+
+/* ============================================
+   MAP
+   ============================================ */
+
+.map {
+  flex: 1;
+  background: #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 600px;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+
+.sidebar {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar p {
+  font-size: 16px;
+}
+
+/* ============================================
+   INPUTS & BUTTONS
+   ============================================ */
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
 }
 
 .select {
   width: 100%;
-  padding: 12px;
-  border: 2px solid #000;
-  background: #fff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.btn-outline {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 2px solid #111;
+  background: white;
   font-size: 16px;
   cursor: pointer;
+  transition: 0.15s;
+}
+
+.btn-outline:hover {
+  background: #111;
+  color: white;
 }
 
 /* ============================================
-   GAME LAYOUT
-   ============================================ */
-
-.game-layout {
-  display: flex;
-}
-
-.map {
-  flex: 1;          /* nimmt den ganzen restlichen Platz */
-  height: 100%;     /* volle Höhe */
-  min-height: 600px; /* damit sie schön groß bleibt */
-}
-
-.sidebar {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.input {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #000;
-  font-size: 16px;
-}
-
-.feedback {
-  font-size: 16px;
-  font-weight: 600;
-  min-height: 24px;
-}
-
-/* ============================================
-   DROPDOWN (Vorschläge)
+   DROPDOWN (Auto-Suggest)
    ============================================ */
 
 .dropdown {
-  position: relative;
-  border: 2px solid #000;
-  border-top: none;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
   max-height: 200px;
   overflow-y: auto;
-  background: #fff;
-}
-
-.dropdown div {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.dropdown div:hover {
-  background: #000;
-  color: #fff;
+  padding: 5px;
+  font-size: 15px;
 }
 
 /* ============================================
-   INFO BOX
+   FEEDBACK
    ============================================ */
 
-.info-box {
-  border: 2px solid #000;
-  padding: 20px;
-  font-size: 16px;
+.feedback {
+  font-size: 18px;
   font-weight: 600;
-  background: #fff;
+  margin-top: 10px;
 }
 
 /* ============================================
    MULTIPLAYER LOBBY
    ============================================ */
 
-#players {
-  margin-top: 20px;
-  border: 2px solid #000;
+#lobby {
+  background: white;
   padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
 }
 
-.player-row {
-  padding: 10px 0;
-  border-bottom: 1px solid #000;
+#players {
+  margin-top: 10px;
+  font-size: 16px;
 }
 
-.player-row:last-child {
-  border-bottom: none;
-}
+/* ============================================
+   MOBILE
+   ============================================ */
 
+@media (max-width: 900px) {
+  .game-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .map {
+    min-height: 400px;
+  }
+}
