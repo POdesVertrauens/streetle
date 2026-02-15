@@ -81,13 +81,24 @@
       <button id="menuToggle">☰ Menü</button>
     </header>
 
+    <!-- Seitenmenü -->
     <div id="sideMenu" class="side-menu">
       <h2>🎯 Schwierigkeit</h2>
       <label><input type="radio" name="difficulty" value="leicht" checked> Leicht</label>
       <label><input type="radio" name="difficulty" value="schwer"> Schwer</label>
     </div>
 
-    <div id="game-container">
+    <!-- Lobby -->
+    <section id="lobby" class="lobby" style="display:none;">
+      <h2>🏟️ Lobby</h2>
+      <p id="lobbyGameId"></p>
+      <div id="playersList"></div>
+      <p id="lobbyStatus"></p>
+      <button id="startGameBtn" style="display:none;">Spiel starten</button>
+    </section>
+
+    <!-- Spielcontainer -->
+    <div id="game-container" style="display:none;">
       <div id="map"></div>
 
       <div id="controls">
