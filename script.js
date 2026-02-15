@@ -195,7 +195,7 @@ function initMap() {
 
 async function loadGeoJSON() {
   if (alleFeatures.length) return;
-  const res = await fetch("/streetle/berlin-innenstadt.geojson");
+  const res = await fetch("berlin-innenstadt.geojson");
   const data = await res.json();
   alleFeatures = data.features.filter(f => f.properties.strassenna);
 }
@@ -344,7 +344,6 @@ function initMultiplayerHost(id) {
     renderPlayersList(players);
   });
 
-  // Host selbst eintragen
   const hostId = playerId || randomId(4);
   playerId = hostId;
   set(ref(db, `games/${id}/players/${hostId}`), {
