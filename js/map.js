@@ -52,12 +52,15 @@ export function showStreet(feature) {
     map.removeLayer(currentLayer);
   }
 
-  currentLayer = L.geoJSON(feature, {
-    style: {
-      color: "#000",
-      weight: 4
-    }
-  }).addTo(map);
+currentLayer = L.geoJSON(feature, {
+  style: {
+    color: "#e63946",   // kräftiges Rot
+    weight: 6,          // dicker
+    opacity: 1,
+    lineCap: "round",   // runde Enden
+    lineJoin: "round"   // runde Ecken
+  }
+}).addTo(map);
 
   centerStreet(feature);
 }
@@ -81,3 +84,4 @@ export function centerStreet(feature) {
 export function getMap() {
   return map;
 }
+
