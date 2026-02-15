@@ -31,10 +31,18 @@ export class GameEngine {
   /* --------------------------------------------
      GEOJSON LADEN
   -------------------------------------------- */
-  async loadData() {
-    const data = await loadGeoJSON();
-    this.allFeatures = data.features.filter(f => f.properties.strassenna);
+async loadData() {
+  const response = await fetch("data/berlin.geojson");
+  const json = await response.json();
+
+  if (this.streetMode === "important") {
+    this.allFeatures = json.features.filter(f =>
+      IMPORTANT_STREETS.includes(f.properties.strassenna)
+    );
+  } else {
+    this.allFeatures = json.features;
   }
+}
 
   /* --------------------------------------------
      RUNDE STARTEN
@@ -157,3 +165,4 @@ export class GameEngine {
     this.startRound();
   }
 }
+
