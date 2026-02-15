@@ -4,22 +4,22 @@
   <meta charset="UTF-8">
   <title>Streetle – Start</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/streetle/style.css">
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Firebase -->
-  <script type="module" src="firebase.js"></script>
+  <script type="module" src="/streetle/firebase.js"></script>
 
   <!-- Game Logic -->
-  <script src="script.js" defer></script>
+  <script src="/streetle/script.js" defer></script>
 </head>
 
 <body class="startscreen">
 
-  <!-- START HEADER -->
+  <!-- HEADER -->
   <header class="start-header">
     <h1>Streetle</h1>
   </header>
@@ -27,15 +27,15 @@
   <!-- STARTSCREEN -->
   <main class="start-container">
 
-    <!-- MODUS -->
+    <!-- 🎮 Modus -->
     <section class="mode-section">
       <div class="mode-card" id="singleplayer">Singleplayer</div>
       <div class="mode-card" id="multiplayer">Multiplayer</div>
     </section>
 
-    <!-- SCHWIERIGKEIT: Kontext -->
+    <!-- 🧭 Kontext -->
     <section class="toggle-section">
-      <h2>Schwierigkeitsgrad</h2>
+      <h2>🧭 Schwierigkeitsgrad</h2>
 
       <div class="toggle-card">
         <span>Mit Kontext (Straßennamen sichtbar)</span>
@@ -48,9 +48,9 @@
       </div>
     </section>
 
-    <!-- STRASSENUMFANG -->
+    <!-- 🛣️ Straßenumfang -->
     <section class="toggle-section">
-      <h2>Straßenumfang</h2>
+      <h2>🛣️ Straßenumfang</h2>
 
       <div class="toggle-card">
         <span>Nur große Straßen & Plätze</span>
@@ -63,9 +63,9 @@
       </div>
     </section>
 
-    <!-- MULTIPLAYER UI -->
+    <!-- 👥 Multiplayer -->
     <section class="toggle-section" id="mpSection" style="display:none;">
-      <h2>Multiplayer Party</h2>
+      <h2>👥 Multiplayer Party</h2>
       <button id="createPartyBtn">Party erstellen</button>
       <p id="partyLinkInfo"></p>
       <p id="partyStatus"></p>
@@ -73,7 +73,7 @@
 
   </main>
 
-  <!-- GAME SCREEN -->
+  <!-- SPIEL -->
   <main id="gameScreen" style="display:none;">
 
     <header>
@@ -82,9 +82,9 @@
     </header>
 
     <div id="sideMenu" class="side-menu">
-      <h2>Schwierigkeit wählen</h2>
-      <label><input type="radio" name="difficulty" value="leicht" checked> 🎯 Leicht</label>
-      <label><input type="radio" name="difficulty" value="schwer"> 🔥 Schwer</label>
+      <h2>🎯 Schwierigkeit</h2>
+      <label><input type="radio" name="difficulty" value="leicht" checked> Leicht</label>
+      <label><input type="radio" name="difficulty" value="schwer"> Schwer</label>
     </div>
 
     <div id="game-container">
