@@ -67,3 +67,52 @@
     <section class="toggle-section" id="mpSection" style="display:none;">
       <h2>Multiplayer Party</h2>
       <button id="createPartyBtn">Party erstellen</button>
+      <p id="partyLinkInfo"></p>
+      <p id="partyStatus"></p>
+    </section>
+
+  </main>
+
+  <!-- GAME SCREEN -->
+  <main id="gameScreen" style="display:none;">
+
+    <header>
+      <h1>Streetle</h1>
+      <button id="menuToggle">☰ Menü</button>
+    </header>
+
+    <div id="sideMenu" class="side-menu">
+      <h2>Schwierigkeit wählen</h2>
+      <label><input type="radio" name="difficulty" value="leicht" checked> 🎯 Leicht</label>
+      <label><input type="radio" name="difficulty" value="schwer"> 🔥 Schwer</label>
+    </div>
+
+    <div id="game-container">
+      <div id="map"></div>
+
+      <div id="controls">
+        <button id="newGameButton" onclick="neuesSpiel()">🆕 Neues Spiel</button>
+
+        <div id="input-row">
+          <button id="tippButton" onclick="zeigeTipp()">💡 Tipp</button>
+
+          <div class="input-wrapper">
+            <input type="text" id="guessInput" placeholder="Straßenname eingeben..." oninput="zeigeVorschlaege(this.value)">
+            <span class="clear-btn" onclick="document.getElementById('guessInput').value=''; document.getElementById('vorschlagBox').innerHTML=''">×</span>
+            <div id="vorschlagBox" class="dropdown"></div>
+          </div>
+
+          <button onclick="neueStrasse()">⟳ Neue Straße</button>
+        </div>
+
+        <button id="rateButton" onclick="guess()">Raten</button>
+        <p id="feedback"></p>
+        <div id="tippBox"></div>
+        <p id="mpInfo"></p>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
