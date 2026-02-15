@@ -31,13 +31,15 @@ export class GameEngine {
   /* --------------------------------------------
      GEOJSON LADEN
   -------------------------------------------- */
+import { WICHTIGE_STRASSEN } from "./config.js";
+
 async loadData() {
   const response = await fetch("data/berlin-innenstadt.geojson");
   const json = await response.json();
 
   if (this.streetMode === "important") {
     this.allFeatures = json.features.filter(f =>
-      IMPORTANT_STREETS.includes(f.properties.strassenna)
+      WICHTIGE_STRASSEN.includes(f.properties.strassenna)
     );
   } else {
     this.allFeatures = json.features;
@@ -165,6 +167,7 @@ async loadData() {
     this.startRound();
   }
 }
+
 
 
 
