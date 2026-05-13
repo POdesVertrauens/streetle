@@ -1,16 +1,13 @@
 /* ============================================
-   UI — Dropdown, Screens, kleine Helfer
+   UI — Dropdown Vorschläge
    ============================================ */
 
-/* --------------------------------------------
-   DROPDOWN FÜR VORSCHLÄGE
--------------------------------------------- */
-export function setupSuggestions(inputEl, dropdownEl, allNames) {
+export function setupSuggestions(inputEl, dropdownEl, allNames, onSelect) {
   inputEl.addEventListener("input", () => {
     const query = inputEl.value.toLowerCase().trim();
     dropdownEl.innerHTML = "";
 
-    if (!query) return;
+    if (!query || query.length < 2) return;
 
     const matches = allNames
       .filter(n => n.toLowerCase().includes(query))
@@ -19,29 +16,23 @@ export function setupSuggestions(inputEl, dropdownEl, allNames) {
     matches.forEach(name => {
       const div = document.createElement("div");
       div.textContent = name;
+      div.style.padding = "6px 10px";
+      div.style.cursor = "pointer";
+      div.onmouseenter = () => div.style.background = "#f0f0f0";
+      div.onmouseleave = () => div.style.background = "white";
       div.onclick = () => {
         inputEl.value = name;
         dropdownEl.innerHTML = "";
+        if (onSelect) onSelect(name);
       };
       dropdownEl.appendChild(div);
     });
   });
-}
 
-/* --------------------------------------------
-   SCREEN WECHSELN
--------------------------------------------- */
-export function show(el) {
-  el.style.display = "block";
-}
-
-export function hide(el) {
-  el.style.display = "none";
-}
-
-/* --------------------------------------------
-   TEXT SETZEN
--------------------------------------------- */
-export function setText(el, text) {
-  el.textContent = text;
+  // Dropdown schließen wenn woanders geklickt wird
+  document.addEventListener("click", (e) => {
+    if (!inputEl.contains(e.target) && !dropdownEl.contains(e.target)) {
+      dropdownEl.innerHTML = "";
+    }
+  });
 }
