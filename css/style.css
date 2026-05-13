@@ -24,27 +24,34 @@ h1, h2, h3, p {
    ============================================ */
 
 .header {
-  padding: 20px 30px;
+  padding: 16px 30px;
   background: white;
   border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.5px;
-  text-transform: none; /* kein STREETLE mehr */
   color: #111;
 }
 
-.subtitle {
-  font-size: 16px;
+.btn-back {
+  font-size: 14px;
   color: #555;
-  margin-top: 4px;
+  text-decoration: none;
+  margin-left: auto;
+}
+
+.btn-back:hover {
+  color: #111;
 }
 
 /* ============================================
-   STARTSEITE (index.html)
+   STARTSEITE
    ============================================ */
 
 .page-start .container {
@@ -52,7 +59,8 @@ h1, h2, h3, p {
   margin: 40px auto;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
+  padding: 0 20px;
 }
 
 .block {
@@ -63,7 +71,7 @@ h1, h2, h3, p {
 }
 
 .block-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   margin-bottom: 12px;
 }
@@ -72,11 +80,12 @@ h1, h2, h3, p {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 6px 0;
+  margin: 8px 0;
+  cursor: pointer;
 }
 
 /* ============================================
-   GAME LAYOUT (singleplayer + multiplayer)
+   GAME LAYOUT
    ============================================ */
 
 .page-game .container {
@@ -86,7 +95,7 @@ h1, h2, h3, p {
 .game-layout {
   display: flex;
   gap: 20px;
-  height: calc(100vh - 120px); /* Header + Padding */
+  height: calc(100vh - 80px);
 }
 
 /* ============================================
@@ -98,7 +107,7 @@ h1, h2, h3, p {
   background: #ddd;
   border-radius: 12px;
   overflow: hidden;
-  min-height: 600px;
+  min-height: 400px;
 }
 
 /* ============================================
@@ -106,14 +115,21 @@ h1, h2, h3, p {
    ============================================ */
 
 .sidebar {
-  width: 220px;
+  width: 240px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 
 .sidebar p {
   font-size: 16px;
+  font-weight: 500;
+}
+
+#timer {
+  font-size: 28px;
+  font-weight: 700;
+  color: #e63946;
 }
 
 /* ============================================
@@ -126,6 +142,11 @@ h1, h2, h3, p {
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 16px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #111;
 }
 
 .select {
@@ -137,22 +158,28 @@ h1, h2, h3, p {
 }
 
 .btn-outline {
+  width: 100%;
   padding: 10px 12px;
   border-radius: 8px;
   border: 2px solid #111;
   background: white;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   transition: 0.15s;
 }
 
-.btn-outline:hover {
+.btn-outline:hover:not(:disabled) {
   background: #111;
   color: white;
 }
 
+.btn-outline:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 /* ============================================
-   DROPDOWN (Auto-Suggest)
+   DROPDOWN
    ============================================ */
 
 .dropdown {
@@ -161,8 +188,11 @@ h1, h2, h3, p {
   border-radius: 8px;
   max-height: 200px;
   overflow-y: auto;
-  padding: 5px;
   font-size: 15px;
+}
+
+.dropdown:empty {
+  display: none;
 }
 
 /* ============================================
@@ -170,25 +200,19 @@ h1, h2, h3, p {
    ============================================ */
 
 .feedback {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  margin-top: 10px;
+  min-height: 24px;
 }
 
 /* ============================================
-   MULTIPLAYER LOBBY
+   ENDSCREEN
    ============================================ */
 
-#lobby {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-}
-
-#players {
-  margin-top: 10px;
-  font-size: 16px;
+#endscreen {
+  max-width: 500px;
+  margin: 60px auto;
+  text-align: center;
 }
 
 /* ============================================
@@ -198,16 +222,21 @@ h1, h2, h3, p {
 @media (max-width: 900px) {
   .game-layout {
     flex-direction: column;
+    height: auto;
   }
 
   .sidebar {
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
+  }
+
+  .sidebar p, #timer {
+    width: 100%;
   }
 
   .map {
-    min-height: 400px;
+    min-height: 350px;
   }
 }
