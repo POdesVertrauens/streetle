@@ -14,40 +14,41 @@
 
   <header class="header">
     <h1 class="title">Streetle</h1>
+    <a href="index.html" class="btn-back">← Zurück</a>
   </header>
 
   <main class="container">
 
-    <!-- ⭐ WICHTIG: Das Map-Element -->
     <section id="game" class="game-layout">
       <div id="map" class="map"></div>
 
       <div class="sidebar">
         <p id="roundInfo">Runde 1 von 5</p>
-        <p id="timer">00:00</p>
+        <p id="scoreInfo">Punkte: 0</p>
+        <p id="timer">01:00</p>
 
-        <input id="guessInput" class="input" placeholder="Straßenname eingeben…">
+        <input id="guessInput" class="input" placeholder="Straßenname eingeben…" autocomplete="off">
         <div id="suggestions" class="dropdown"></div>
 
         <button id="btnGuess" class="btn-outline">Raten</button>
-
-        <!-- Diese beiden Buttons werden von deiner JS verwendet -->
-        <button id="btnHint1" class="btn-outline">Hinweis 1</button>
-        <button id="btnHint2" class="btn-outline">Hinweis 2</button>
+        <button id="btnHint1" class="btn-outline">Hinweis 1 (−100 Pkt)</button>
+        <button id="btnHint2" class="btn-outline">Hinweis 2 (−200 Pkt)</button>
 
         <div id="feedback" class="feedback"></div>
+        <button id="btnNext" class="btn-outline" style="display:none;">Nächste Runde →</button>
       </div>
+    </section>
+
+    <!-- Endscreen -->
+    <section id="endscreen" class="block" style="display:none; text-align:center; margin-top:40px;">
+      <h2 class="block-title">Spiel beendet!</h2>
+      <p id="finalScore" style="font-size:24px; margin:16px 0;"></p>
+      <button onclick="window.location.href='index.html'" class="btn-outline">Nochmal spielen</button>
     </section>
 
   </main>
 
-  <!-- ⭐ Module korrekt eingebunden -->
-  <script type="module" src="js/config.js"></script>
-  <script type="module" src="js/utils.js"></script>
-  <script type="module" src="js/map.js"></script>
-  <script type="module" src="js/game-engine.js"></script>
   <script type="module" src="js/singleplayer.js"></script>
 
 </body>
 </html>
-
