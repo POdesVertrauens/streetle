@@ -5,24 +5,16 @@
 import { BASEMAPS } from "./config.js";
 
 let map = null;
-let geojsonData = null;
 let currentLayer = null;
 
 /* Karte initialisieren */
 export function initMap(contextMode = "withContext") {
-  if (!map) {
-    map = L.map("map", {
-      zoomControl: false,
-      attributionControl: true
-    }).setView([52.52, 13.405], 12);
-  }
+  map = L.map("map", {
+    zoomControl: true,
+    attributionControl: true
+  }).setView([52.52, 13.405], 13);
 
-  setBasemap(contextMode);
-}
-
-/* Basemap setzen */
-export function setBasemap(mode) {
-  const url = mode === "withoutContext"
+  const url = contextMode === "withoutContext"
     ? BASEMAPS.withoutContext
     : BASEMAPS.withContext;
 
@@ -30,15 +22,15 @@ export function setBasemap(mode) {
     subdomains: "abcd",
     attribution: "© OpenStreetMap © CARTO"
   }).addTo(map);
+
+  return map;
 }
 
-/* GeoJSON laden (einmalig) */
+/* GeoJSON laden */
 export async function loadGeoJSON() {
-  if (geojsonData) return geojsonData;
-
   const res = await fetch("data/berlin-innenstadt.geojson");
-  geojsonData = await res.json();
-  return geojsonData;
+  const data = await res.json();
+  return data;
 }
 
 /* Zufällige Straße auswählen */
@@ -52,26 +44,21 @@ export function showStreet(feature) {
     map.removeLayer(currentLayer);
   }
 
-currentLayer = L.geoJSON(feature, {
-  style: {
-    color: "#e63946",   // kräftiges Rot
-    weight: 6,          // dicker
-    opacity: 1,
-    lineCap: "round",   // runde Enden
-    lineJoin: "round"   // runde Ecken
-  }
-}).addTo(map);
+  currentLayer = L.geoJSON(feature, {
+    style: {
+      color: "#e63946",
+      weight: 6,
+      opacity: 1,
+      lineCap: "round",
+      lineJoin: "round"
+    }
+  }).addTo(map);
 
-  centerStreet(feature);
-}
-
-/* Karte auf Straße zentrieren */
-export function centerStreet(feature) {
+  // Karte auf Straße zentrieren
   try {
-    const layer = L.geoJSON(feature);
-    const bounds = layer.getBounds();
+    const bounds = currentLayer.getBounds();
     if (bounds.isValid()) {
-      map.fitBounds(bounds.pad(0.2));
+      map.fitBounds(bounds.pad(0.4));
     }
   } catch (e) {
     console.warn("Konnte Bounds nicht berechnen:", e);
@@ -79,9 +66,3 @@ export function centerStreet(feature) {
 
   setTimeout(() => map.invalidateSize(), 50);
 }
-
-/* Export für andere Module */
-export function getMap() {
-  return map;
-}
-
